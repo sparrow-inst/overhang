@@ -85,8 +85,8 @@
      directly on the map the way desktop does */
   .titleBlock {
     position: absolute;
-    left: 16px;
-    right: 16px;
+    left: 32px;
+    right: 32px;
     top: 12dvh;
     max-width: none;
     padding: 0;

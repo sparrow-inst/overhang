@@ -161,27 +161,34 @@
   place-items: center;
   margin: 6px 0;
   --marker: #f26a1b;
+  --marker-stroke: 2.5px;
+  --marker-cross-weight: 700;
 }
-:global([data-theme="night"]) .marker { --marker: var(--accent2); }
+/* night's glow already thickens the mark, so it needs less stroke to read */
+:global([data-theme="night"]) .marker {
+  --marker: var(--accent2);
+  --marker-stroke: 1.5px;
+  --marker-cross-weight: 500;
+}
 
 .markerRing {
   position: absolute;
   inset: 0;
-  border: 2.5px solid var(--marker);
+  border: var(--marker-stroke) solid var(--marker);
   border-radius: 50%;
   opacity: 0.9;
 }
 .markerPulse {
   position: absolute;
   inset: 0;
-  border: 2.5px solid var(--marker);
+  border: var(--marker-stroke) solid var(--marker);
   border-radius: 50%;
   animation: pulse 2.6s ease-out infinite;
 }
 .markerCross {
   color: var(--marker);
   font-size: 22px;
-  font-weight: 700;
+  font-weight: var(--marker-cross-weight);
   line-height: 1;
 }
 

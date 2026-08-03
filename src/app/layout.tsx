@@ -33,19 +33,18 @@ export const metadata: Metadata = {
   },
 };
 
+// night's --bg: the site defaults dark whatever the OS says
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4efe0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0910" },
-  ],
+  themeColor: "#0a0910",
 };
 
-// runs before paint: pick stored theme, else follow the OS
-const themeInit = `(function(){try{var s=localStorage.getItem("overhang-theme");var t=s||(matchMedia("(prefers-color-scheme: dark)").matches?"night":"day");document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme="day";}})();`;
+// runs before paint: honour a stored choice, else default to night — the site
+// is designed dark first, so we don't follow the OS preference
+const themeInit = `(function(){try{var s=localStorage.getItem("overhang-theme");document.documentElement.dataset.theme=s==="day"?"day":"night";}catch(e){document.documentElement.dataset.theme="night";}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="day" suppressHydrationWarning>
+    <html lang="en" data-theme="night" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
