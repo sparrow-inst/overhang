@@ -1,5 +1,5 @@
-/* card + tail + marker rendered as one vertical stack; the page flips
-   the order on mobile so the tail points up instead of down */
+/* card + tail + marker rendered as one vertical stack, with the marker below
+   the card and the tail pointing down at it */
 .stack {
   display: flex;
   flex-direction: column;
@@ -145,8 +145,9 @@
   color: var(--panel);
   margin: -1px 0;
 }
-.tailUp { transform: rotate(180deg); }
 
+/* day's --accent2 is a brick red that goes muddy at this size, so the marker
+   takes a brighter orange of its own; night's accent2 already reads well */
 .marker {
   position: relative;
   width: 40px;
@@ -154,30 +155,34 @@
   display: grid;
   place-items: center;
   margin: 6px 0;
+  --marker: #f26a1b;
 }
+:global([data-theme="night"]) .marker { --marker: var(--accent2); }
+
 .markerRing {
   position: absolute;
   inset: 0;
-  border: 1.5px solid var(--accent2);
+  border: 2.5px solid var(--marker);
   border-radius: 50%;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .markerPulse {
   position: absolute;
   inset: 0;
-  border: 1.5px solid var(--accent2);
+  border: 2.5px solid var(--marker);
   border-radius: 50%;
   animation: pulse 2.6s ease-out infinite;
 }
 .markerCross {
-  color: var(--accent2);
-  font-size: 18px;
+  color: var(--marker);
+  font-size: 22px;
+  font-weight: 700;
   line-height: 1;
 }
 
 :global([data-theme="night"]) .markerRing,
 :global([data-theme="night"]) .markerCross {
-  filter: drop-shadow(0 0 6px var(--accent2));
+  filter: drop-shadow(0 0 6px var(--marker));
 }
 
 @keyframes pulse {

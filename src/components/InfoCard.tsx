@@ -55,14 +55,6 @@ export function InfoCard({
 
   return (
     <div className={styles.stack}>
-      <div className={styles.marker} aria-hidden>
-        <span className={styles.markerPulse} />
-        <span className={styles.markerRing} />
-        <span className={styles.markerCross}>+</span>
-      </div>
-      <svg className={`${styles.tail} ${styles.tailUp}`} width="34" height="24" viewBox="0 0 34 24">
-        <path d="M1 0 L17 22 L33 0" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
-      </svg>
       <div className={styles.card}>
         {showTitle && (
           <>
@@ -97,6 +89,14 @@ export function InfoCard({
             {cta.label}
           </a>
         )}
+      </div>
+      <svg className={styles.tail} width="34" height="24" viewBox="0 0 34 24">
+        <path d="M1 0 L17 22 L33 0" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
+      </svg>
+      <div className={styles.marker} aria-hidden>
+        <span className={styles.markerPulse} />
+        <span className={styles.markerRing} />
+        <span className={styles.markerCross}>+</span>
       </div>
     </div>
   );
