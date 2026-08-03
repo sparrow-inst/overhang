@@ -127,6 +127,21 @@
   color: var(--dim);
 }
 
+/* primary action at the foot of the card, matching the header button */
+.cta {
+  display: block;
+  margin-top: 16px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: var(--cta);
+  color: var(--cta-ink);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+.cta:hover { filter: brightness(1.08); }
+
 .tail {
   display: block;
   color: var(--panel);

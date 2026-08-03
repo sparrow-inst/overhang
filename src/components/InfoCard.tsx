@@ -26,10 +26,13 @@ const icon = {
 export function InfoCard({
   event,
   showTitle = true,
+  cta,
 }: {
   event: LumaEventInfo | null;
   /** false on desktop, where the hero title already says all this */
   showTitle?: boolean;
+  /** primary action rendered at the foot of the card */
+  cta?: { href: string; label: string };
 }) {
   const rows = [
     {
@@ -89,8 +92,12 @@ export function InfoCard({
             </div>
           ))}
         </div>
-        {/* desktop shows this line in the hero title block instead */}
         {showTitle && <div className={styles.schedule}>Schedule to come</div>}
+        {cta && (
+          <a className={styles.cta} href={cta.href}>
+            {cta.label}
+          </a>
+        )}
       </div>
     </div>
   );

@@ -11,16 +11,24 @@
   padding: 20px 7vw 0;
 }
 
+/* legend plate and location card as one group, so the card is placed relative
+   to the plate rather than pinned to the viewport corner */
+.heroGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(24px, 4vw, 64px);
+}
+
 /* the title block is a map legend: a dark plate the type sits on, so it stays
    legible over the topo lines instead of competing with them */
 .titleBlock {
   max-width: fit-content;
   padding: 30px 38px 34px;
   border-radius: 18px;
-  background: rgba(28, 22, 14, 0.82);
-  border: 1.5px solid rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(28, 22, 14, 0.6);
+  border: 2px solid rgba(245, 236, 218, 0.8);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   box-shadow: var(--shadow);
 }
 
@@ -43,29 +51,12 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* primary CTA, matching the header's button */
-.heroCta {
-  display: inline-block;
-  margin-top: 26px;
-  padding: 13px 26px;
-  border-radius: 10px;
-  background: var(--cta);
-  color: var(--cta-ink);
-  font-size: 15px;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-}
-.heroCta:hover { filter: brightness(1.08); }
-
-/* card in the bottom-right of the screen, marker + tail pointing up */
+/* marker + tail point up in both layouts */
 .heroCard {
-  position: absolute;
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
-.cardDesktop {
-  right: 11vw;
-  bottom: 24dvh;
-}
+/* desktop card rides alongside the legend plate, in flow with it */
+.cardDesktop { flex: none; }
 
 .cardMobile { display: none; }
 
@@ -78,6 +69,7 @@
   .cardDesktop { display: none; }
   .cardMobile {
     display: block;
+    position: absolute; /* desktop keeps the card in flow; mobile pins it */
     left: 50%;
     transform: translateX(-50%);
     bottom: 4dvh;
