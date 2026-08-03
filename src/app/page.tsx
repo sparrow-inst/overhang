@@ -39,7 +39,7 @@ export default async function Home() {
             </div>
           </div>
           <div className={`${styles.heroCard} ${styles.cardMobile}`} data-topo-avoid>
-            <InfoCard event={event} />
+            <InfoCard event={event} cta={{ href: "#tickets", label: "Get Tickets" }} />
           </div>
         </section>
 

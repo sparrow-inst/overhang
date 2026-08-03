@@ -92,7 +92,6 @@ export function InfoCard({
             </div>
           ))}
         </div>
-        {showTitle && <div className={styles.schedule}>Schedule to come</div>}
         {cta && (
           <a className={styles.cta} href={cta.href}>
             {cta.label}
