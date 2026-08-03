@@ -76,7 +76,9 @@
 
 @media (max-width: 767px) {
   .hero {
-    min-height: calc(92dvh - 56px); /* speakers just barely peek at first load */
+    /* runs past the fold so speakers are fully off the first screen and the
+       topo graphic gets the whole splash to itself */
+    min-height: calc(104dvh - 56px);
     padding: 0 16px;
   }
   .titleBlock { display: none; } /* title lives in the header bar on mobile */
@@ -86,7 +88,9 @@
     position: absolute; /* desktop keeps the card in flow; mobile pins it */
     left: 50%;
     transform: translateX(-50%);
-    bottom: 4dvh;
+    /* measured from the hero's foot, which now overruns the fold — add that
+       overrun back so the card still sits 4dvh above the visible bottom */
+    bottom: calc(4dvh + 4dvh);
   }
 }
 

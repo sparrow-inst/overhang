@@ -22,6 +22,28 @@
   border-bottom-color: var(--border-soft);
 }
 
+/* mobile: no veil over the splash at all — the bar stays fully clear until
+   the wordmark arrives (.veiled), letting the topo graphic run behind it */
+@media (max-width: 767px) {
+  .header {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .header.veiled {
+    background: color-mix(in srgb, var(--panel) 55%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .header.veiled.scrolled {
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  /* the border tracks the veil too, or it floats as a bare line */
+  .header.scrolled:not(.veiled) { border-bottom-color: transparent; }
+}
+
 .brand {
   display: flex;
   align-items: center;

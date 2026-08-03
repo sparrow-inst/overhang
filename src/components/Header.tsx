@@ -35,7 +35,18 @@ export function Header() {
   }, []);
 
   return (
-    <header className={`${styles.header} ${scrolled || menuOpen ? styles.scrolled : ""}`} data-topo-avoid>
+    <header
+      className={[
+        styles.header,
+        scrolled || menuOpen ? styles.scrolled : "",
+        // mobile keeps the bar fully clear until the wordmark arrives, so the
+        // splash graphic reads uninterrupted; desktop veils it from the start
+        pastSplash || menuOpen ? styles.veiled : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      data-topo-avoid
+    >
       {/* mobile: menu on the left */}
       <button
         className={`${styles.iconBtn} ${styles.menuToggle}`}
