@@ -81,21 +81,15 @@
     min-height: calc(104dvh - 56px);
     padding: 0 16px;
   }
-  /* mobile gives the title and subtitle their own plate above the card,
-     styled like it rather than sharing its panel */
+  /* mobile shows the title and subtitle on their own above the card, sitting
+     directly on the map the way desktop does */
   .titleBlock {
     position: absolute;
     left: 16px;
     right: 16px;
     top: 12dvh;
     max-width: none;
-    padding: 22px 26px;
-    background: var(--panel);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    text-align: center;
+    padding: 0;
   }
   .title {
     font-size: clamp(40px, 13vw, 62px);
@@ -104,7 +98,6 @@
   .subtitle {
     font-size: 15px;
     max-width: none;
-    color: var(--dim);
   }
   .cardDesktop { display: none; }
   .cardMobile {
