@@ -27,7 +27,9 @@ export default async function Home() {
             <p className={styles.subtitle}>
               A two-day convening for forecasters, rationalists, futurists, and optimists.
             </p>
-            <p className={styles.schedule}>Schedule to come</p>
+            <a className={styles.heroCta} href="#tickets">
+              Get Tickets
+            </a>
           </div>
 
           {/* marker + tail point up in both layouts; desktop card sits on
