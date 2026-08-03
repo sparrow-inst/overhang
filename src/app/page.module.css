@@ -17,10 +17,14 @@
   padding: 10px 0 0;
 }
 
+/* title, subtitle and the card all scale across 768 -> 1200px and hold from
+   there, so the hero stops growing as one piece at the same width where the
+   card's rows collapse to two lines. The calc() intercept form puts each size
+   exactly on its endpoints rather than landing near them by coincidence. */
 .title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(56px, 8.5vw, 118px);
+  font-size: clamp(56px, calc(-54.22px + 14.352vw), 118px);
   line-height: 0.98;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -29,7 +33,7 @@
 }
 
 .subtitle {
-  font-size: clamp(16px, 1.6vw, 21px);
+  font-size: clamp(16px, calc(7.11px + 1.157vw), 21px);
   font-weight: 500;
   line-height: 1.5;
   /* the break is hard-coded in the markup, so no width cap is needed to
