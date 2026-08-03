@@ -18,25 +18,21 @@ export default async function Home() {
         <Header />
 
         <section className={styles.hero} id="splash">
-          {/* plate + card travel together, so the card is positioned in
-              relation to the legend rather than to the viewport corner */}
-          <div className={styles.heroGroup}>
-            <div className={styles.titleBlock} data-topo-avoid>
-              <h1 className={styles.title}>
-                The
-                <br />
-                Overhang
-              </h1>
-              <p className={styles.subtitle}>
-                A two-day convening for forecasters, rationalists, futurists, and optimists.
-              </p>
-            </div>
+          <div className={styles.titleBlock} data-topo-avoid>
+            <h1 className={styles.title}>
+              The
+              <br />
+              Overhang
+            </h1>
+            <p className={styles.subtitle}>
+              A two-day convening for forecasters, rationalists, futurists, and optimists.
+            </p>
+          </div>
 
-            {/* desktop card skips the title the hero already shows, and
-                carries the CTA */}
-            <div className={`${styles.heroCard} ${styles.cardDesktop}`} data-topo-avoid>
-              <InfoCard event={event} showTitle={false} cta={{ href: "#tickets", label: "Get Tickets" }} />
-            </div>
+          {/* card sits on the screen diagonal; skips the title the hero
+              already shows, and carries the CTA */}
+          <div className={`${styles.heroCard} ${styles.cardDesktop}`} data-topo-avoid>
+            <InfoCard event={event} showTitle={false} cta={{ href: "#tickets", label: "Get Tickets" }} />
           </div>
           <div className={`${styles.heroCard} ${styles.cardMobile}`} data-topo-avoid>
             <InfoCard event={event} cta={{ href: "#tickets", label: "Get Tickets" }} />

@@ -11,13 +11,6 @@
   padding: 20px 7vw 0;
 }
 
-/* title block and location card as one group, so the card is placed relative
-   to the title rather than pinned to the viewport corner */
-.heroGroup {
-  position: relative;
-  width: fit-content;
-}
-
 /* plate is off for now — the type sits directly on the map again */
 .titleBlock {
   max-width: fit-content;
@@ -47,15 +40,19 @@
 .heroCard {
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
-/* card hangs off the title block's bottom-right, overlapping it slightly.
-   width:max-content stops the card shrink-wrapping to the narrow group it's
-   absolutely positioned inside — it sizes to its own text instead. */
+/* the card's top-centre sits 66% of the way along the screen diagonal. A point
+   at fraction f down the top-left -> bottom-right diagonal is just (f, f) in
+   each axis, so 66% across and 66% down. Measured in viewport units rather
+   than percentages so it tracks the screen itself, not .hero's padded box;
+   the offsets undo .hero's 7vw side padding and 20px top padding, and the
+   translate pulls the card back by half its width to centre it on the point. */
 .cardDesktop {
   position: absolute;
-  left: calc(100% - var(--overlap));
-  top: calc(100% - var(--overlap) + 40px);
+  --diagonal: 0.66;
+  left: calc(100vw * var(--diagonal) - 7vw);
+  top: calc(100dvh * var(--diagonal) - 20px);
+  transform: translateX(-50%);
   width: max-content;
-  --overlap: 56px;
 }
 
 .cardMobile { display: none; }
