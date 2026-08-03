@@ -207,8 +207,8 @@ void main(){
     vec3 paper = vec3(0.957, 0.937, 0.878);
     vec3 fill = (u_hyps == 1) ? mix(paper, dayRamp(band), u_tint) : paper;
     vec3 land = fill * shade;
-    land = mix(land, vec3(0.607, 0.416, 0.204), core * 0.55);
-    land = mix(land, vec3(0.455, 0.290, 0.118), coreI * 0.70 * isIdx);
+    land = mix(land, vec3(0.722, 0.557, 0.373), core * 0.30);
+    land = mix(land, vec3(0.639, 0.478, 0.310), coreI * 0.42 * isIdx);
     vec3 wat = mix(vec3(0.760, 0.878, 0.914), vec3(0.580, 0.780, 0.860), depth);
     wat *= mix(vec3(1.0), shade, 0.35);
     col = mix(land, wat, wmask);
@@ -856,16 +856,28 @@ export function createTopo(
       c.fillText(elev.toLocaleString() + "'", x, y + 12);
     } else {
       const [lat, lon] = drawCoords(x, y, W, H);
-      c.textAlign = x > W * 0.72 ? "right" : "left";
-      const tx = x > W * 0.72 ? x - 30 : x + 30;
-      c.font = "italic 600 14px Georgia, 'Times New Roman', serif";
+      const right = x > W * 0.72;
+      const tx = right ? x - 30 : x + 30;
+      // name and elevation share a line, matching the night layout
+      const nameFont = "italic 600 14px Georgia, 'Times New Roman', serif";
+      const monoFont = "11px ui-monospace, Menlo, monospace";
+      const nm = f.name || type;
+      const ev = " · " + elev.toLocaleString() + "'";
+      c.font = nameFont;
+      const nw = c.measureText(nm).width;
+      c.font = monoFont;
+      const ew = c.measureText(ev).width;
+      const startX = right ? tx - nw - ew : tx;
+      c.textAlign = "left";
+      c.font = nameFont;
       c.fillStyle = hexA(DAY_INK.name, 0.95 * fade);
-      c.fillText(f.name || type, tx, y - 12);
-      c.font = "11px ui-monospace, Menlo, monospace";
+      c.fillText(nm, startX, y - 10);
+      c.font = monoFont;
       c.fillStyle = hexA(DAY_INK.red, 0.9 * fade);
-      c.fillText(elev.toLocaleString() + "'", tx, y + 3);
+      c.fillText(ev, startX + nw, y - 10);
+      c.textAlign = right ? "right" : "left";
       c.fillStyle = hexA(DAY_INK.slate, 0.85 * fade);
-      c.fillText(lat + "° N  " + lon + "° W", tx, y + 17);
+      c.fillText(lat + "° N  " + lon + "° W", tx, y + 6);
     }
     c.restore();
   }
