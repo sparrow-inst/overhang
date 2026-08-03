@@ -5,7 +5,7 @@ import { createTopo, type TopoHandle } from "@/lib/topo";
 import { useTheme } from "@/components/ThemeProvider";
 
 /**
- * Full-viewport animated topo map, fixed behind the page content.
+ * Animated topo map behind the splash, scrolling away with it.
  * If WebGL2 is unavailable the div just shows the flat theme background.
  */
 export function TopoBackground() {
@@ -40,8 +40,13 @@ export function TopoBackground() {
     <div
       aria-hidden
       style={{
-        position: "fixed",
-        inset: 0,
+        /* absolute, not fixed: the map belongs to the splash and scrolls away
+           with it, rather than sitting pinned behind the whole page */
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "100dvh",
         zIndex: 0,
         background: "var(--bg)",
         overflow: "hidden",
