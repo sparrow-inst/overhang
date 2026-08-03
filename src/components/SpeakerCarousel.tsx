@@ -2,18 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./SpeakerCarousel.module.css";
-import data from "@/data/speakers.json";
+import type { Speaker } from "@/lib/airtable";
 
-interface Speaker {
-  id: string;
-  name: string;
-  subtitle: string;
-  photoUrl: string;
-}
-
-const speakers: Speaker[] = data.speakers;
-
-export function SpeakerCarousel() {
+export function SpeakerCarousel({ speakers }: { speakers: Speaker[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -29,7 +20,7 @@ export function SpeakerCarousel() {
     const track = trackRef.current;
     if (!track) return;
     setIndex(Math.min(speakers.length - 1, Math.round(track.scrollLeft / cardStep())));
-  }, []);
+  }, [speakers.length]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -41,6 +32,9 @@ export function SpeakerCarousel() {
   const scrollTo = (i: number) => {
     trackRef.current?.scrollTo({ left: i * cardStep(), behavior: "smooth" });
   };
+
+  // nothing to show rather than an empty carousel if Airtable is unreachable
+  if (!speakers.length) return null;
 
   return (
     <section id="speakers" style={{ scrollMarginTop: 80 }}>

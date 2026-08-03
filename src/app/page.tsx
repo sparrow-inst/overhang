@@ -4,12 +4,13 @@ import { InfoCard } from "@/components/InfoCard";
 import { SpeakerCarousel } from "@/components/SpeakerCarousel";
 import { TicketCard } from "@/components/TicketCard";
 import { getEventInfo } from "@/lib/luma";
+import { getSpeakers } from "@/lib/airtable";
 import styles from "./page.module.css";
 
 export const revalidate = 300;
 
 export default async function Home() {
-  const event = await getEventInfo();
+  const [event, speakers] = await Promise.all([getEventInfo(), getSpeakers()]);
 
   return (
     <>
@@ -45,7 +46,7 @@ export default async function Home() {
 
         <div className={styles.solid}>
           <div className={styles.inner}>
-            <SpeakerCarousel />
+            <SpeakerCarousel speakers={speakers} />
             <TicketCard />
 
             <section id="about" style={{ scrollMarginTop: 80 }}>
