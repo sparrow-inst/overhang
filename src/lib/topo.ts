@@ -331,6 +331,14 @@ export function createTopo(
   const levelTexA = gl.createTexture();
   const levelTexB = gl.createTexture();
   let levelFlip = false;
+  // async readback: readPixels goes into a pixel-pack buffer behind a
+  // fence and is harvested a tick later — no synchronous pipeline stall.
+  // Two PBOs ping-pong so a fresh issue never rewrites the buffer a
+  // harvest (or the driver's shadow copy) may still be draining.
+  const fieldPbos = [gl.createBuffer(), gl.createBuffer()];
+  let pboWriteIdx = 0;
+  let pendingPbo: WebGLBuffer | null = null;
+  let readFence: WebGLSync | null = null;
 
   function initLevelTex(tex: WebGLTexture | null, data: Float32Array) {
     gl!.bindTexture(gl!.TEXTURE_2D, tex);
@@ -352,6 +360,13 @@ export function createTopo(
     gl!.framebufferTexture2D(gl!.FRAMEBUFFER, gl!.COLOR_ATTACHMENT0, gl!.TEXTURE_2D, fieldTex, 0);
     gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
     fieldPixels = new Uint8Array(FIELD_W * FIELD_H * 4);
+    for (const pbo of fieldPbos) {
+      gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, pbo);
+      gl!.bufferData(gl!.PIXEL_PACK_BUFFER, fieldPixels.byteLength, gl!.STREAM_READ);
+    }
+    gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, null);
+    if (readFence) { gl!.deleteSync(readFence); readFence = null; }
+    pendingPbo = null;
     const zeros = new Float32Array(FIELD_W * FIELD_H);
     gl!.activeTexture(gl!.TEXTURE0); initLevelTex(levelTexA, zeros);
     gl!.activeTexture(gl!.TEXTURE1); initLevelTex(levelTexB, zeros);
@@ -596,7 +611,8 @@ export function createTopo(
 
   const UPDATE_MS = 350;
   const features: Feature[] = [];
-  let lastDetect = 0;
+  let lastDetect = 0; // when the last CPU update was APPLIED (drives wblend)
+  let lastIssue = 0; // when the last readback was ISSUED (drives cadence)
 
   function rawDecode(i: number, j: number) {
     const k = ((FIELD_H - 1 - j) * FIELD_W + i) * 4;
@@ -951,7 +967,7 @@ export function createTopo(
 
   function staticRerender(forceTick: boolean) {
     if (!staticMode) return;
-    if (forceTick) lastDetect = -1e9;
+    if (forceTick) { lastIssue = -1e9; lastDetect = -1e9; }
     cancelAnimationFrame(staticPending);
     staticPending = requestAnimationFrame(frame);
   }
@@ -994,8 +1010,37 @@ export function createTopo(
     gl!.uniform1i(U.u_night, night ? 1 : 0);
   }
 
+  // CPU half of a detect tick: decode terrain, rebuild hydrology,
+  // upload the water level texture, retrack features
+  function applyFieldUpdate(now: number) {
+    let mMin = 1, mMax = 0;
+    for (let j2 = 0; j2 < FIELD_H; j2++)
+      for (let i2 = 0; i2 < FIELD_W; i2++) {
+        const tv = rawDecode(i2, j2);
+        terrGrid[j2 * FIELD_W + i2] = tv;
+        if (tv < mMin) mMin = tv;
+        if (tv > mMax) mMax = tv;
+      }
+    // freeze the legends on the first tick of each seed
+    if (!normInit) {
+      normMin = mMin - 0.02;
+      normMaxDay = mMax + 0.6 * snowRand;
+      normMaxNight = mMax + 0.02;
+      normInit = true;
+    }
+    updateLakes();
+
+    levelFlip = !levelFlip;
+    gl!.activeTexture(levelFlip ? gl!.TEXTURE1 : gl!.TEXTURE0);
+    gl!.bindTexture(gl!.TEXTURE_2D, levelFlip ? levelTexB : levelTexA);
+    gl!.texSubImage2D(gl!.TEXTURE_2D, 0, 0, 0, FIELD_W, FIELD_H, gl!.RED, gl!.FLOAT, levelGrid);
+
+    updateFeatures(now, cssW, cssH);
+    lastDetect = now;
+  }
+
   function frame(now: number) {
-    if (destroyed) return;
+    if (destroyed || pageHidden) return;
     const dt = Math.min(0.1, (now - lastFrame) / 1000 || 0.016);
     lastFrame = now;
     fpsEma = fpsEma * 0.95 + (1 / dt) * 0.05;
@@ -1009,39 +1054,45 @@ export function createTopo(
     gl!.uniform1i(U.u_output, 0);
     gl!.drawArrays(gl!.TRIANGLES, 0, 3);
 
-    if (now - lastDetect > UPDATE_MS) {
-      lastDetect = now;
+    // harvest a previously issued async readback once its fence signals
+    if (readFence && pendingPbo) {
+      const st = gl!.clientWaitSync(readFence, 0, 0);
+      if (st === gl!.ALREADY_SIGNALED || st === gl!.CONDITION_SATISFIED) {
+        gl!.deleteSync(readFence); readFence = null;
+        gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, pendingPbo);
+        gl!.getBufferSubData(gl!.PIXEL_PACK_BUFFER, 0, fieldPixels);
+        gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, null);
+        pendingPbo = null;
+        applyFieldUpdate(now);
+      } else if (st === gl!.WAIT_FAILED) {
+        gl!.deleteSync(readFence); readFence = null;
+        pendingPbo = null;
+      }
+    }
+
+    if ((staticMode || !readFence) && now - lastIssue > UPDATE_MS) {
+      lastIssue = now;
       gl!.bindFramebuffer(gl!.FRAMEBUFFER, fieldFbo);
       gl!.viewport(0, 0, FIELD_W, FIELD_H);
       gl!.uniform2f(U.u_outRes, FIELD_W, FIELD_H);
       gl!.uniform1i(U.u_output, 1);
       gl!.drawArrays(gl!.TRIANGLES, 0, 3);
-      gl!.readPixels(0, 0, FIELD_W, FIELD_H, gl!.RGBA, gl!.UNSIGNED_BYTE, fieldPixels);
-      gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
-
-      let mMin = 1, mMax = 0;
-      for (let j2 = 0; j2 < FIELD_H; j2++)
-        for (let i2 = 0; i2 < FIELD_W; i2++) {
-          const tv = rawDecode(i2, j2);
-          terrGrid[j2 * FIELD_W + i2] = tv;
-          if (tv < mMin) mMin = tv;
-          if (tv > mMax) mMax = tv;
-        }
-      // freeze the legends on the first tick of each seed
-      if (!normInit) {
-        normMin = mMin - 0.02;
-        normMaxDay = mMax + 0.6 * snowRand;
-        normMaxNight = mMax + 0.02;
-        normInit = true;
+      if (staticMode) {
+        // single-shot render: the data is needed this frame, stall is fine
+        if (readFence) { gl!.deleteSync(readFence); readFence = null; }
+        gl!.readPixels(0, 0, FIELD_W, FIELD_H, gl!.RGBA, gl!.UNSIGNED_BYTE, fieldPixels);
+        gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
+        applyFieldUpdate(now);
+      } else {
+        const pbo = fieldPbos[pboWriteIdx];
+        pboWriteIdx ^= 1;
+        gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, pbo);
+        gl!.readPixels(0, 0, FIELD_W, FIELD_H, gl!.RGBA, gl!.UNSIGNED_BYTE, 0);
+        gl!.bindBuffer(gl!.PIXEL_PACK_BUFFER, null);
+        pendingPbo = pbo;
+        readFence = gl!.fenceSync(gl!.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
       }
-      updateLakes();
-
-      levelFlip = !levelFlip;
-      gl!.activeTexture(levelFlip ? gl!.TEXTURE1 : gl!.TEXTURE0);
-      gl!.bindTexture(gl!.TEXTURE_2D, levelFlip ? levelTexB : levelTexA);
-      gl!.texSubImage2D(gl!.TEXTURE_2D, 0, 0, 0, FIELD_W, FIELD_H, gl!.RED, gl!.FLOAT, levelGrid);
-
-      updateFeatures(now, cssW, cssH);
     }
     gl!.activeTexture(gl!.TEXTURE0);
     gl!.bindTexture(gl!.TEXTURE_2D, levelFlip ? levelTexA : levelTexB);
@@ -1087,6 +1138,22 @@ export function createTopo(
   window.addEventListener("resize", onResize);
   window.addEventListener("orientationchange", onOrient);
 
+  // don't burn GPU in a background tab
+  let pageHidden = false;
+  const onVisibility = () => {
+    if (document.hidden) {
+      pageHidden = true;
+      cancelAnimationFrame(raf);
+      cancelAnimationFrame(staticPending);
+    } else if (pageHidden) {
+      pageHidden = false;
+      lastFrame = performance.now();
+      if (staticMode) staticRerender(false);
+      else raf = requestAnimationFrame(frame);
+    }
+  };
+  document.addEventListener("visibilitychange", onVisibility);
+
   reseed((Math.random() * 1e9) | 0);
   resize();
   if (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -1106,6 +1173,8 @@ export function createTopo(
       cancelAnimationFrame(staticPending);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orientationchange", onOrient);
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (readFence) gl!.deleteSync(readFence);
       gl!.getExtension("WEBGL_lose_context")?.loseContext();
     },
   };
