@@ -684,7 +684,7 @@ export function createTopo(
     const matchR = Math.min(W, H) * 0.16;
     // labels are ~200px wide regardless of screen, so keep spacing tied to
     // the larger dimension — narrow phones otherwise stack labels
-    const minDist = Math.max(260, Math.max(W, H) * 0.22);
+    const minDist = Math.max(320, Math.max(W, H) * 0.22);
 
     for (const f of features) f.matched = false;
     for (const f of features) {

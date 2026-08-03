@@ -72,7 +72,8 @@
 }
 .iconBtn:hover { filter: brightness(1.1); }
 
-/* mobile-only wordmark, larger per spec */
+/* mobile-only wordmark, larger per spec; hidden until the header
+   gains its scrolled backdrop so it doesn't float over the bare map */
 .mobileTitle {
   display: none;
   font-family: var(--font-mono);
@@ -81,7 +82,10 @@
   text-transform: uppercase;
   color: var(--ink);
   white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
+.scrolled .mobileTitle { opacity: 1; }
 
 .menu {
   position: absolute;
