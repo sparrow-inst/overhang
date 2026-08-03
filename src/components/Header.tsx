@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
+import { EVENT_URL } from "@/lib/event";
 import styles from "./Header.module.css";
 
 const LINKS = [
@@ -77,7 +78,7 @@ export function Header() {
         <button className={styles.iconBtn} aria-label="Toggle day/night theme" onClick={toggle}>
           {theme === "night" ? "☀" : "☾"}
         </button>
-        <a className={styles.cta} href="#tickets">
+        <a className={styles.cta} href={EVENT_URL} target="_blank" rel="noopener noreferrer">
           Get Tickets
         </a>
       </nav>
@@ -103,7 +104,13 @@ export function Header() {
               {l.label}
             </a>
           ))}
-          <a className={styles.menuLink} href="#tickets" onClick={() => setMenuOpen(false)}>
+          <a
+            className={styles.menuLink}
+            href={EVENT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
             Get Tickets →
           </a>
         </nav>

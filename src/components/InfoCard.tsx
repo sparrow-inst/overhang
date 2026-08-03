@@ -85,7 +85,7 @@ export function InfoCard({
           ))}
         </div>
         {cta && (
-          <a className={styles.cta} href={cta.href}>
+          <a className={styles.cta} href={cta.href} target="_blank" rel="noopener noreferrer">
             {cta.label}
           </a>
         )}

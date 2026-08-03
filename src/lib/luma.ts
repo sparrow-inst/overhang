@@ -4,9 +4,11 @@
  * shipped to the client.
  */
 
+import { EVENT_URL } from "@/lib/event";
+
 const LUMA = "https://public-api.luma.com/v1";
 const EVENT_ID = process.env.LUMA_EVENT_ID ?? "evt-nwu5co94KFZux5y";
-const EVENT_URL_FALLBACK = "https://luma.com/overhang26";
+const EVENT_URL_FALLBACK = EVENT_URL;
 
 export interface LumaEventInfo {
   name: string;

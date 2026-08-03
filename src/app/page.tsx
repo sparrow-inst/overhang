@@ -5,6 +5,7 @@ import { SpeakerCarousel } from "@/components/SpeakerCarousel";
 import { TicketCard } from "@/components/TicketCard";
 import { getEventInfo } from "@/lib/luma";
 import { getSpeakers } from "@/lib/airtable";
+import { EVENT_URL } from "@/lib/event";
 import styles from "./page.module.css";
 
 export const revalidate = 300;
@@ -37,10 +38,10 @@ export default async function Home() {
           {/* card sits on the screen diagonal; skips the title the hero
               already shows, and carries the CTA */}
           <div className={`${styles.heroCard} ${styles.cardDesktop}`} data-topo-avoid>
-            <InfoCard event={event} showTitle={false} cta={{ href: "#tickets", label: "Get Tickets" }} />
+            <InfoCard event={event} showTitle={false} cta={{ href: EVENT_URL, label: "Get Tickets" }} />
           </div>
           <div className={`${styles.heroCard} ${styles.cardMobile}`} data-topo-avoid>
-            <InfoCard event={event} showTitle={false} cta={{ href: "#tickets", label: "Get Tickets" }} />
+            <InfoCard event={event} showTitle={false} cta={{ href: EVENT_URL, label: "Get Tickets" }} />
           </div>
         </section>
 

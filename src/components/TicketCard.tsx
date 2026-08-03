@@ -152,7 +152,7 @@ export function TicketCard() {
           data-luma-event-id={eventApiId}
           {...(selected ? { "data-luma-ticket-type": selected } : {})}
         >
-          Get Tickets <span aria-hidden>→</span>
+          Continue to Luma <span aria-hidden>→</span>
         </a>
         <div className={styles.footer}>
           Registration, login, and payment happen on{" "}
