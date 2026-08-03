@@ -962,11 +962,10 @@ export function createTopo(
   let cssW = 0, cssH = 0, dpr = 1;
   let raf = 0;
 
-  /* Device tiers: full-scale animation; adaptive render-scale shrink when
-     fps < 28; static single render under 15 fps or reduced motion. */
-  const isMobile = typeof matchMedia !== "undefined" &&
-    (matchMedia("(pointer: coarse)").matches || (navigator.maxTouchPoints || 0) > 1);
-  let glScale = isMobile ? 0.75 : 1.0;
+  /* Device tiers: start everyone at full render scale and let the fps
+     monitor demote — shrink the GL buffer under 28 fps, static single
+     render under 15 fps or reduced motion. Fast phones stay sharp. */
+  let glScale = 1.0;
   let staticMode = false, staticPending = 0;
   let adaptAt = 0;
   const probeGrace = performance.now() + 2500;
@@ -991,7 +990,10 @@ export function createTopo(
 
   function resize() {
     if (destroyed) return;
-    dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5);
+    // cap dpr at 2: past that the extra fragment cost buys nothing visible
+    // on contour-line art, and 3x phone screens were rendering blurry under
+    // the old 1.25 mobile cap
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
     cssW = Math.floor(glCanvas.parentElement?.clientWidth ?? window.innerWidth);
     cssH = Math.floor(glCanvas.parentElement?.clientHeight ?? window.innerHeight);
     applyGLSize();
