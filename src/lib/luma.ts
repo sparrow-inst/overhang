@@ -10,6 +10,8 @@ const EVENT_URL_FALLBACK = "https://luma.com/overhang26";
 
 export interface LumaEventInfo {
   name: string;
+  /** evt-… api id; the Luma checkout embed needs it alongside the ticket type */
+  apiId: string;
   url: string;
   startAt: string | null;
   endAt: string | null;
@@ -51,6 +53,7 @@ export async function getEventInfo(): Promise<LumaEventInfo | null> {
     const geo = ev.geo_address_json ?? {};
     return {
       name: ev.name ?? "The Overhang",
+      apiId: ev.api_id ?? EVENT_ID,
       url: ev.url ?? EVENT_URL_FALLBACK,
       startAt: ev.start_at ?? null,
       endAt: ev.end_at ?? null,

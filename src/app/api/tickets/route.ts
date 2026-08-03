@@ -13,6 +13,7 @@ export async function GET() {
     return NextResponse.json(
       {
         eventUrl: event?.url ?? "https://luma.com/overhang26",
+        eventApiId: event?.apiId ?? "evt-nwu5co94KFZux5y",
         timezone: event?.timezone ?? "America/New_York",
         ticketTypes,
       },

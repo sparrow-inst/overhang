@@ -17,17 +17,22 @@ interface Tier {
 }
 
 /* Baked snapshot of the live tiers — served if the API call fails so the
- * card never renders empty. Not the source of truth. */
-const FALLBACK: { eventUrl: string; ticketTypes: Tier[] } = {
+ * card never renders empty. Not the source of truth.
+ * The id is the ttype- api_id Luma returns; the checkout embed matches on it,
+ * so a typo here silently drops the pre-selected tier. */
+const FALLBACK: { eventUrl: string; eventApiId: string; ticketTypes: Tier[] } = {
   eventUrl: "https://luma.com/overhang26",
+  eventApiId: "evt-nwu5co94KFZux5y",
   ticketTypes: [
-    { id: "ttype-iOiAStExgpFb4WN", name: "Early Bird", priceCents: 15000, free: false, description: "", requireApproval: true, validStartAt: null, validEndAt: "2026-08-15T03:59:59.000Z", spotsRemaining: null },
     { id: "ttype-yFA9UKocxvGSCUJ", name: "Standard Ticket", priceCents: 20000, free: false, description: "", requireApproval: true, validStartAt: "2026-08-14T21:00:00.000Z", validEndAt: "2026-08-29T03:59:59.000Z", spotsRemaining: null },
-    { id: "ttype-0wQppiNeHC9qZPq", name: "Last Chance Tickets", priceCents: 25000, free: false, description: "", requireApproval: false, validStartAt: "2026-08-28T21:00:00.000Z", validEndAt: "2026-09-12T03:59:59.000Z", spotsRemaining: null },
-    { id: "ttype-bz5G53Y0Qn5DeU0", name: "Supporter Badge", priceCents: 40000, free: false, description: "Help this event continue to exist!", requireApproval: true, validStartAt: null, validEndAt: "2026-09-12T03:59:59.000Z", spotsRemaining: null },
-    { id: "ttype-aopHXc8MxSR4WPA", name: "Volunteer", priceCents: null, free: true, description: "Requires two half-day volunteer shifts, 10 hours in total. Earn a free T-Shirt, free admission, and our thanks!", requireApproval: true, validStartAt: null, validEndAt: "2026-08-29T03:59:59.000Z", spotsRemaining: 20 },
   ],
 };
+
+declare global {
+  interface Window {
+    luma?: { initCheckout?: () => void };
+  }
+}
 
 type TierStatus = "open" | "upcoming" | "ended" | "soldout";
 
@@ -51,6 +56,7 @@ function statusLine(t: Tier, status: TierStatus): string | null {
 
 export function TicketCard() {
   const [eventUrl, setEventUrl] = useState(FALLBACK.eventUrl);
+  const [eventApiId, setEventApiId] = useState(FALLBACK.eventApiId);
   const [tiers, setTiers] = useState<Tier[]>(FALLBACK.ticketTypes);
   const [selected, setSelected] = useState<string | null>(null);
   const [now, setNow] = useState(0); // 0 until mount → all tiers render neutral on the server pass
@@ -63,6 +69,7 @@ export function TicketCard() {
         if (Array.isArray(data.ticketTypes) && data.ticketTypes.length) {
           setTiers(data.ticketTypes);
           if (data.eventUrl) setEventUrl(data.eventUrl);
+          if (data.eventApiId) setEventApiId(data.eventApiId);
         }
       })
       .catch((err) => console.error("[tickets] falling back to snapshot:", err));
@@ -80,7 +87,17 @@ export function TicketCard() {
     if (first) setSelected(first.id);
   }, [tiers, statuses, selected]);
 
-  const href = selected ? `${eventUrl}?tt=${encodeURIComponent(selected)}` : eventUrl;
+  /* The embed script binds its click handler when it scans the DOM, which
+     happens before this client component has rendered — and it reads the
+     ticket type off the element at bind time, so a changed selection needs a
+     re-bind too. initCheckout is the script's own re-scan hook. */
+  useEffect(() => {
+    window.luma?.initCheckout?.();
+  }, [selected, eventApiId]);
+
+  /* Plain link target for no-JS and as the href the embed overrides: the
+     event page itself, since ?tt= only means something on the embed URL. */
+  const href = eventUrl;
 
   return (
     <section id="tickets" style={{ scrollMarginTop: 80 }}>
@@ -122,7 +139,15 @@ export function TicketCard() {
           })}
         </div>
 
-        <a className={styles.cta} href={href} target="_blank" rel="noopener noreferrer">
+        <a
+          className={`${styles.cta}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-luma-action="checkout"
+          data-luma-event-id={eventApiId}
+          {...(selected ? { "data-luma-ticket-type": selected } : {})}
+        >
           Get Tickets <span aria-hidden>→</span>
         </a>
         <div className={styles.footer}>

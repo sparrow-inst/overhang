@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
@@ -50,6 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${display.variable} ${body.variable} ${mono.variable}`}>
         <ThemeProvider>{children}</ThemeProvider>
+        {/* Luma checkout modal. The id is load-bearing: the script reads its
+            own src off #luma-checkout to derive the embed origin. */}
+        <Script id="luma-checkout" src="https://embed.lu.ma/checkout-button.js" strategy="afterInteractive" />
       </body>
     </html>
   );
