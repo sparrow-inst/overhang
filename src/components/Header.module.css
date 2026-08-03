@@ -1,0 +1,113 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.scrolled {
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom-color: var(--border-soft);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+}
+
+.brandName {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.navLink {
+  font-size: 14px;
+  color: var(--ink);
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}
+.navLink:hover { opacity: 1; color: var(--accent); }
+
+.cta {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: none;
+  background: var(--cta);
+  color: var(--cta-ink);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.cta:hover { filter: brightness(1.08); }
+
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1;
+}
+.iconBtn:hover { filter: brightness(1.1); }
+
+/* mobile-only wordmark, larger per spec */
+.mobileTitle {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 17px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 12px;
+  min-width: 200px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+}
+
+.menuLink {
+  padding: 11px 14px;
+  border-radius: 9px;
+  font-size: 15px;
+  color: var(--ink);
+}
+.menuLink:hover { background: var(--border-soft); color: var(--accent); }
+
+@media (max-width: 767px) {
+  .header { padding: 10px 12px; }
+  .nav, .brand { display: none; }
+  .mobileTitle { display: block; }
+}
+
+@media (min-width: 768px) {
+  .menuToggle { display: none; }
+}

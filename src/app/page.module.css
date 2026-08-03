@@ -1,0 +1,184 @@
+.main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: calc(100dvh - 64px);
+  padding: 20px 7vw 0;
+}
+
+.titleBlock { max-width: 720px; }
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: clamp(56px, 8.5vw, 118px);
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 24px 0 20px;
+}
+
+.subtitle {
+  font-size: clamp(16px, 1.6vw, 21px);
+  line-height: 1.5;
+  max-width: 430px;
+  color: var(--ink);
+  opacity: 0.85;
+}
+
+/* card centered at 33% of site width, tail pointing down */
+.heroCard {
+  position: absolute;
+  left: 33%;
+  transform: translateX(-50%);
+  top: clamp(300px, 42dvh, 480px);
+  z-index: 2; /* paint above the solid section so the marker never clips */
+}
+
+.cardMobile { display: none; }
+
+@media (max-width: 767px) {
+  .hero {
+    min-height: calc(92dvh - 56px); /* speakers just barely peek at first load */
+    padding: 0 16px;
+  }
+  .titleBlock { display: none; } /* title lives in the header bar on mobile */
+  .cardDesktop { display: none; }
+  .cardMobile {
+    display: block;
+    left: 50%;
+    top: auto;
+    bottom: 4dvh;
+  }
+}
+
+/* ---------- content below the map ---------- */
+
+.solid {
+  position: relative;
+  background: var(--bg);
+  border-top: 1px solid var(--border-soft);
+  transition: background 0.4s ease;
+}
+
+.inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 64px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+}
+
+@media (max-width: 767px) {
+  .inner { padding-top: 40px; gap: 52px; }
+}
+
+/* ---------- about ---------- */
+
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 44px;
+  align-items: center;
+}
+
+.aboutBody {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink);
+  max-width: 560px;
+}
+.aboutBody em { color: var(--dim); }
+
+.aboutLink {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.aboutLink:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.aboutAside {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: 26px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink);
+  text-align: center;
+}
+.aboutAside footer {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+@media (max-width: 767px) {
+  .aboutGrid { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-soft);
+  padding: 36px 24px 44px;
+}
+
+.footerInner {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footerName {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.footerTag {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--dim);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.footerNav {
+  display: flex;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--dim);
+}
+.footerNav a:hover { color: var(--accent); }

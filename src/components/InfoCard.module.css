@@ -1,0 +1,143 @@
+/* card + tail + marker rendered as one vertical stack; the page flips
+   the order on mobile so the tail points up instead of down */
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
+}
+
+.card {
+  width: min(360px, calc(100vw - 32px));
+  /* mobile spec asks for a wider card */
+}
+@media (max-width: 767px) {
+  .card { width: min(460px, calc(100vw - 28px)); }
+}
+.card {
+  padding: 22px 26px 18px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 550;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14.5px;
+  text-align: center;
+  color: var(--dim);
+  margin-bottom: 14px;
+}
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dim);
+  margin: 12px 0;
+}
+.rule::before,
+.rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
+.rule svg { flex: none; opacity: 0.8; }
+
+.rows {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: 14px;
+  row-gap: 12px;
+  align-items: baseline;
+  font-size: 14.5px;
+}
+.rows svg {
+  align-self: center;
+  color: var(--accent);
+  opacity: 0.9;
+}
+.rowLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.rowValue { color: var(--ink); line-height: 1.45; }
+
+.schedule {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border-soft);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.tail {
+  display: block;
+  color: var(--panel);
+  margin: -1px 0;
+}
+.tailUp { transform: rotate(180deg); }
+
+.marker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin: 6px 0;
+}
+.markerRing {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent2);
+  border-radius: 50%;
+  opacity: 0.85;
+}
+.markerPulse {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent2);
+  border-radius: 50%;
+  animation: pulse 2.6s ease-out infinite;
+}
+.markerCross {
+  color: var(--accent2);
+  font-size: 18px;
+  line-height: 1;
+}
+
+:global([data-theme="night"]) .markerRing,
+:global([data-theme="night"]) .markerCross {
+  filter: drop-shadow(0 0 6px var(--accent2));
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  70% { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markerPulse { animation: none; opacity: 0; }
+}
