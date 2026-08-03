@@ -109,14 +109,19 @@
 /* desktop has the room for a larger card; mobile keeps the sizes above.
    Type scales on vw the way the hero title does (clamp(56px, 8.5vw, 118px)),
    so the card grows and shrinks in step with it — the vw slopes here are that
-   8.5vw scaled by each size's share of the title's 118px maximum. */
+   8.5vw scaled by each size's share of the title's 118px maximum.
+
+   The ceilings matter as much as the slopes: 8.5vw reaches 118px at ~1388px,
+   so each max below is its own slope at that same width. Otherwise the title
+   freezes while the card keeps growing, and the card reads as zooming alone
+   past ~1400px. */
 @media (min-width: 768px) {
   .card { padding: 24px 30px 22px; }
   .rows { gap: 15px; }
   .row { --gutter: 26px; }
   .row svg { width: 20px; height: 20px; }
-  .row:first-child .rowValue { font-size: clamp(17px, 1.44vw, 26px); }
-  .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 23px); }
+  .row:first-child .rowValue { font-size: clamp(17px, 1.44vw, 20px); }
+  .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 17.5px); }
 }
 
 /* primary action at the foot of the card, matching the header button */
@@ -128,7 +133,9 @@
   background: var(--cta);
   color: var(--cta-ink);
   text-align: center;
-  font-size: clamp(15px, 1.1vw, 20px);
+  /* 1.1vw would only span 15->15.3px before the title's ceiling at ~1388px,
+     so this stays fixed rather than pretending to scale */
+  font-size: 15px;
   font-weight: 650;
   letter-spacing: 0.02em;
 }
