@@ -1,10 +1,15 @@
-/* card + tail + marker rendered as one vertical stack, with the marker below
-   the card and the tail pointing down at it */
+/* card + tail + marker rendered as one vertical stack. Source order is
+   card -> tail -> marker, so the marker hangs below the card on desktop;
+   mobile reverses the column to put it back above, pointing up at the map. */
 .stack {
   display: flex;
   flex-direction: column;
   align-items: center;
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
+}
+@media (max-width: 767px) {
+  .stack { flex-direction: column-reverse; }
+  .tail { transform: rotate(180deg); }
 }
 
 /* desktop card hugs its content; mobile keeps a fixed, wider box */
