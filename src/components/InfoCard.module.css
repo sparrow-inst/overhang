@@ -118,6 +118,13 @@
   .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 23px); }
 }
 
+/* wide screens have room to run each row on one line again, the way mobile
+   does — the card is width:max-content, so it simply grows to fit and the CTA
+   spans the wider card with it */
+@media (min-width: 1600px) {
+  .rowLine { display: inline-block; }
+}
+
 /* primary action at the foot of the card, matching the header button */
 .cta {
   display: block;
