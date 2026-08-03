@@ -17,7 +17,7 @@ export default async function Home() {
       <div className={styles.main} id="top">
         <Header />
 
-        <section className={styles.hero}>
+        <section className={styles.hero} id="splash">
           <div className={styles.titleBlock} data-topo-avoid>
             <h1 className={styles.title}>
               The
@@ -85,7 +85,7 @@ export default async function Home() {
                 <span className="sparrow-logo" style={{ width: 40, height: 40 }} />
                 <div>
                   <div className={styles.footerName}>Sparrow Institute</div>
-                  <div className={styles.footerTag}>The view’s nice from here.</div>
+                  <div className={styles.footerTag}>While I breathe, I hope.</div>
                 </div>
               </div>
               <nav className={styles.footerNav}>

@@ -13,10 +13,18 @@ const LINKS = [
 export function Header() {
   const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
+  const [pastSplash, setPastSplash] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
+      // wordmark waits until the whole splash screen is behind us
+      const splash = document.getElementById("splash");
+      setPastSplash(
+        splash ? splash.getBoundingClientRect().bottom <= 64 : window.scrollY > window.innerHeight,
+      );
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -39,7 +47,9 @@ export function Header() {
         <span className={styles.brandName}>Sparrow<br />Institute</span>
       </a>
 
-      <span className={styles.mobileTitle}>The Overhang</span>
+      <span className={`${styles.mobileTitle} ${pastSplash ? styles.mobileTitleVisible : ""}`}>
+        The Overhang
+      </span>
 
       <nav className={styles.nav}>
         {LINKS.map((l) => (
