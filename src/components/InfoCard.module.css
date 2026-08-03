@@ -105,14 +105,17 @@
   .rowLine { display: inline-block; }
 }
 
-/* desktop has the room for a larger card; mobile keeps the sizes above */
+/* desktop has the room for a larger card; mobile keeps the sizes above.
+   Type scales on vw the way the hero title does (clamp(56px, 8.5vw, 118px)),
+   so the card grows and shrinks in step with it — the vw slopes here are that
+   8.5vw scaled by each size's share of the title's 118px maximum. */
 @media (min-width: 768px) {
   .card { padding: 24px 30px 22px; }
   .rows { gap: 15px; }
   .row { --gutter: 26px; }
   .row svg { width: 20px; height: 20px; }
-  .row:first-child .rowValue { font-size: 20px; }
-  .row:last-child .rowValue { font-size: 17.5px; }
+  .row:first-child .rowValue { font-size: clamp(17px, 1.44vw, 26px); }
+  .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 23px); }
 }
 
 /* primary action at the foot of the card, matching the header button */
@@ -124,7 +127,7 @@
   background: var(--cta);
   color: var(--cta-ink);
   text-align: center;
-  font-size: 15px;
+  font-size: clamp(15px, 1.1vw, 20px);
   font-weight: 650;
   letter-spacing: 0.02em;
 }

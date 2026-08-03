@@ -44,14 +44,26 @@
    at fraction f down the top-left -> bottom-right diagonal is (f, f) in each
    axis, so 66% across and 66% down the *viewport*. These are offsets inside
    .hero, which starts below the 64px header and is inset by its own padding,
-   so each axis subtracts that origin to get back to screen coordinates. */
+   so each axis subtracts that origin to get back to screen coordinates.
+
+   Two constraints ride on top of that:
+   - the card keeps a 5dvh gap under it. translateY pulls it up by whatever
+     its own height overruns that floor, so the browser measures the card for
+     us — no hardcoded height, and it still tracks content changes.
+   - on very wide screens the diagonal lands too far inboard, so --drift
+     pushes right in proportion to how much wider than 16:9 the screen is. */
 .cardDesktop {
   position: absolute;
   --diagonal: 0.66;
   --hero-top: 64px; /* sticky header height */
-  left: calc(100vw * var(--diagonal) - 7vw);
+  --floor: 5dvh;
+  /* 0 at 16:9, growing as the viewport gets wider relative to its height */
+  --drift: max(0px, (100vw - 100dvh * 16 / 9) * 0.32);
+  left: calc(100vw * var(--diagonal) - 7vw + var(--drift));
   top: calc(100dvh * var(--diagonal) - var(--hero-top) - 20px);
-  transform: translateX(-50%);
+  /* clamp: 0 when the card fits, negative once its foot passes the floor */
+  transform: translateX(-50%)
+    translateY(min(0px, 100dvh * (1 - var(--diagonal)) - var(--floor) - 100%));
   width: max-content;
 }
 
