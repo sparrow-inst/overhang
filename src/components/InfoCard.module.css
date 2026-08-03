@@ -65,12 +65,12 @@
   flex-direction: column;
   gap: 11px;
 }
-/* icon sits in a gutter at the card's left edge; the text centres in the
-   space left over, so the icons line up as a column rather than floating
-   inline with the words */
+/* icon sits in a gutter at the card's left edge, so the icons line up as a
+   column rather than floating inline with the words; text runs left-aligned
+   off that same edge */
 .row {
   display: grid;
-  grid-template-columns: var(--gutter) 1fr var(--gutter);
+  grid-template-columns: var(--gutter) 1fr;
   align-items: start;
   --gutter: 22px;
 }
@@ -80,10 +80,9 @@
   opacity: 0.9;
 }
 .rowValue {
-  grid-column: 2;
   color: var(--ink);
   line-height: 1.35;
-  text-align: center;
+  text-align: left;
 }
 .rowLine { display: block; }
 
