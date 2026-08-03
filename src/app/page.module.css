@@ -31,12 +31,12 @@
   opacity: 0.85;
 }
 
-/* card centered at 33% of site width, tail pointing down */
+/* card on the right side of the screen, marker + tail pointing up */
 .heroCard {
   position: absolute;
-  left: 33%;
+  left: 67%;
   transform: translateX(-50%);
-  top: clamp(300px, 42dvh, 480px);
+  top: clamp(120px, 20dvh, 260px);
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
 

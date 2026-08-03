@@ -84,14 +84,18 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 14px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+  white-space: nowrap; /* keep the label on one line; the rule takes the slack */
   color: var(--ink);
   display: flex;
   align-items: center;
   gap: 18px;
+  flex: 1;
+  min-width: 0;
 }
 .section-title::after {
   content: "";
-  flex: 0 1 220px;
+  flex: 1 1 40px;
+  max-width: 260px;
   height: 1px;
   background: var(--border);
 }

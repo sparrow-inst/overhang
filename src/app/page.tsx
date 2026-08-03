@@ -18,7 +18,7 @@ export default async function Home() {
         <Header />
 
         <section className={styles.hero}>
-          <div className={styles.titleBlock}>
+          <div className={styles.titleBlock} data-topo-avoid>
             <h1 className={styles.title}>
               The
               <br />
@@ -29,12 +29,13 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* desktop: tail down at 33% width; mobile: 2/3 down screen, tail up */}
-          <div className={`${styles.heroCard} ${styles.cardDesktop}`}>
-            <InfoCard event={event} tailDirection="down" />
+          {/* marker + tail point up in both layouts; desktop card sits on
+              the right and skips the title the hero already shows */}
+          <div className={`${styles.heroCard} ${styles.cardDesktop}`} data-topo-avoid>
+            <InfoCard event={event} showTitle={false} />
           </div>
-          <div className={`${styles.heroCard} ${styles.cardMobile}`}>
-            <InfoCard event={event} tailDirection="up" />
+          <div className={`${styles.heroCard} ${styles.cardMobile}`} data-topo-avoid>
+            <InfoCard event={event} />
           </div>
         </section>
 

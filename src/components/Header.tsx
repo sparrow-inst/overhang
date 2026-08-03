@@ -23,7 +23,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className={`${styles.header} ${scrolled || menuOpen ? styles.scrolled : ""}`}>
+    <header className={`${styles.header} ${scrolled || menuOpen ? styles.scrolled : ""}`} data-topo-avoid>
       {/* mobile: menu on the left */}
       <button
         className={`${styles.iconBtn} ${styles.menuToggle}`}

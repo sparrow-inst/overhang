@@ -147,7 +147,10 @@ vec3 nightRamp(float t){
 }
 void main(){
   vec2 pix = vec2(gl_FragCoord.x, u_outRes.y - gl_FragCoord.y) / u_outRes * u_cssRes;
-  float s = u_scale / max(u_cssRes.x, u_cssRes.y);
+  // fixed CSS-px world scale: CSS pixels are density-independent, so
+  // terrain features render at the same physical size on every screen
+  // instead of zooming with the viewport
+  float s = u_scale / 1400.0;
   vec2 p = vec2(pix.x * s * u_stretch, pix.y * s);
   float v = field(p, u_time);
   float v01 = clamp(v * 0.806 + 0.5, 0.0, 1.0);
@@ -631,10 +634,31 @@ export function createTopo(
       }
     }
 
+    // keep labels clear of page UI (header, cards, …): anything marked
+    // [data-topo-avoid] becomes an exclusion zone, padded for label text
+    const PAD = 36;
+    const avoid: { l: number; t: number; r: number; b: number }[] = [];
+    if (typeof document !== "undefined") {
+      document.querySelectorAll("[data-topo-avoid]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width && r.height && r.bottom > -PAD && r.top < H + PAD)
+          avoid.push({ l: r.left - PAD, t: r.top - PAD, r: r.right + PAD, b: r.bottom + PAD });
+      });
+    }
+    const blocked = (px: number, py: number) => {
+      for (const z of avoid) {
+        // labels extend ~170px toward the text side; block that band too
+        const textPad = px > W * 0.72 ? 0 : 170;
+        if (px > z.l - textPad && px < z.r && py > z.t && py < z.b) return true;
+      }
+      return false;
+    };
+
     for (let j = 2; j < FH - 2; j++) {
       for (let i = 2; i < FW - 2; i++) {
         const px = (i + 0.5) * cellX, py = (j + 0.5) * cellY;
         if (px < 0.06 * W || px > 0.94 * W || py < 0.07 * H || py > 0.93 * H) continue;
+        if (blocked(px, py)) continue;
         const k = j * FW + i;
         const c = terrGrid[k];
         if (c === winMaxG[k]) { cands.push({ x: px, y: py, type: "peak", v: c, score: 0.9 + c }); continue; }
@@ -658,7 +682,9 @@ export function createTopo(
   function updateFeatures(now: number, W: number, H: number) {
     const cands = detectCandidates(W, H);
     const matchR = Math.min(W, H) * 0.16;
-    const minDist = Math.min(W, H) * 0.22;
+    // labels are ~200px wide regardless of screen, so keep spacing tied to
+    // the larger dimension — narrow phones otherwise stack labels
+    const minDist = Math.max(260, Math.max(W, H) * 0.22);
 
     for (const f of features) f.matched = false;
     for (const f of features) {

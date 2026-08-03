@@ -36,10 +36,11 @@ const icon = {
 
 export function InfoCard({
   event,
-  tailDirection,
+  showTitle = true,
 }: {
   event: LumaEventInfo | null;
-  tailDirection: "down" | "up";
+  /** false on desktop, where the hero title already says all this */
+  showTitle?: boolean;
 }) {
   const rows = [
     { icon: icon.calendar, label: "Date", value: event ? formatDateRange(event) : "Sep 19 – 20, 2026" },
@@ -52,40 +53,27 @@ export function InfoCard({
     { icon: icon.people, label: "Capacity", value: "3× last year" },
   ];
 
-  const tail = (
-    <svg
-      className={`${styles.tail} ${tailDirection === "up" ? styles.tailUp : ""}`}
-      width="34"
-      height="24"
-      viewBox="0 0 34 24"
-    >
-      <path d="M1 0 L17 22 L33 0" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
-    </svg>
-  );
-
-  const marker = (
-    <div className={styles.marker} aria-hidden>
-      <span className={styles.markerPulse} />
-      <span className={styles.markerRing} />
-      <span className={styles.markerCross}>+</span>
-    </div>
-  );
-
   return (
     <div className={styles.stack}>
-      {tailDirection === "up" && (
-        <>
-          {marker}
-          {tail}
-        </>
-      )}
+      <div className={styles.marker} aria-hidden>
+        <span className={styles.markerPulse} />
+        <span className={styles.markerRing} />
+        <span className={styles.markerCross}>+</span>
+      </div>
+      <svg className={`${styles.tail} ${styles.tailUp}`} width="34" height="24" viewBox="0 0 34 24">
+        <path d="M1 0 L17 22 L33 0" fill="currentColor" stroke="var(--border)" strokeWidth="1.5" />
+      </svg>
       <div className={styles.card}>
-        <div className={styles.title}>The Overhang</div>
-        <div className={styles.tagline}>
-          A two-day convening for forecasters,
-          <br />
-          rationalists, futurists, and optimists.
-        </div>
+        {showTitle && (
+          <>
+            <div className={styles.title}>The Overhang</div>
+            <div className={styles.tagline}>
+              A two-day convening for forecasters,
+              <br />
+              rationalists, futurists, and optimists.
+            </div>
+          </>
+        )}
         <div className={styles.rule}>{icon.compass}</div>
         <div className={styles.rows}>
           {rows.map((r) => (
@@ -94,12 +82,6 @@ export function InfoCard({
         </div>
         <div className={styles.schedule}>Schedule to come</div>
       </div>
-      {tailDirection === "down" && (
-        <>
-          {tail}
-          {marker}
-        </>
-      )}
     </div>
   );
 }
