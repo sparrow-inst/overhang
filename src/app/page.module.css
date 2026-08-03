@@ -53,7 +53,7 @@
 .cardDesktop {
   position: absolute;
   left: calc(100% - var(--overlap));
-  top: calc(100% - var(--overlap));
+  top: calc(100% - var(--overlap) + 40px);
   width: max-content;
   --overlap: 56px;
 }
