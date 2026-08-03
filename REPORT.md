@@ -6,7 +6,7 @@ and pushed to GitHub** with grouped commits. One step needs you: **Vercel**
 
 ## What's done
 
-- **Repo:** https://github.com/Takeoff-DC/overhang (note: the GitHub org is
+- **Repo:** https://github.com/sparrow-inst/overhang (note: the GitHub org is
   `Takeoff-DC`, not `TakeoffDC` — that org doesn't exist, so I used the one
   you're a member of).
 - **Everything in the brief:** animated topo background with your locked
@@ -31,7 +31,7 @@ and pushed to GitHub** with grouped commits. One step needs you: **Vercel**
 
 1. **Vercel deploy** — the CLI here has no credentials and login is an
    interactive browser flow, so I couldn't deploy. Fastest path (~2 min):
-   - vercel.com → Add New → Project → import `Takeoff-DC/overhang`
+   - vercel.com → Add New → Project → import `sparrow-inst/overhang`
      (zero-config, Next.js is auto-detected; build runs fine).
    - Add env var `LUMA_API_KEY` (value is in local `.env`) for all
      environments. `LUMA_EVENT_ID` is optional (defaults to the real event).
