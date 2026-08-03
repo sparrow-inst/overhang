@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { LumaEventInfo } from "@/lib/luma";
 import { formatDateTimeLines } from "@/lib/format";
 import styles from "./InfoCard.module.css";
@@ -77,9 +78,12 @@ export function InfoCard({
               {r.icon}
               <span className={styles.rowValue}>
                 {r.lines.map((line, i) => (
-                  <span key={i} className={styles.rowLine}>
-                    {line}
-                  </span>
+                  <Fragment key={i}>
+                    {/* real space between the parts: on mobile they run
+                        inline and this is where the line may break */}
+                    {i > 0 && " "}
+                    <span className={styles.rowLine}>{line}</span>
+                  </Fragment>
                 ))}
               </span>
             </div>

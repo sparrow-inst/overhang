@@ -65,21 +65,26 @@
   flex-direction: column;
   gap: 11px;
 }
-/* icon + text centred as a unit, so the block hugs the text instead of
-   stretching the width of the card */
+/* icon sits in a gutter at the card's left edge; the text centres in the
+   space left over, so the icons line up as a column rather than floating
+   inline with the words */
 .row {
-  display: flex;
-  justify-content: center;
-  column-gap: 12px;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: var(--gutter) 1fr var(--gutter);
+  align-items: start;
+  --gutter: 22px;
 }
 .row svg {
-  flex: none;
   margin-top: 0.15em; /* optically centre on the first line of text */
   color: var(--accent);
   opacity: 0.9;
 }
-.rowValue { color: var(--ink); line-height: 1.35; text-align: center; }
+.rowValue {
+  grid-column: 2;
+  color: var(--ink);
+  line-height: 1.35;
+  text-align: center;
+}
 .rowLine { display: block; }
 
 /* the when-row carries the weight; the where-row sits back from it */
@@ -93,20 +98,19 @@
   color: var(--dim);
 }
 
-/* mobile card is wide but short — each row reads better as a single line */
+/* mobile card is wide but short, so each row prefers a single line — but the
+   parts stay separate words, free to wrap when they don't fit */
 @media (max-width: 767px) {
-  .rowLine { display: inline; }
-  .rowLine + .rowLine::before {
-    content: " ";
-    white-space: pre;
-  }
+  /* inline-block keeps each stamp whole, so a break lands in the space
+     between the halves rather than inside one of them */
+  .rowLine { display: inline-block; }
 }
 
 /* desktop has the room for a larger card; mobile keeps the sizes above */
 @media (min-width: 768px) {
   .card { padding: 24px 30px 22px; }
   .rows { gap: 15px; }
-  .row { column-gap: 14px; }
+  .row { --gutter: 26px; }
   .row svg { width: 20px; height: 20px; }
   .row:first-child .rowValue { font-size: 20px; }
   .row:last-child .rowValue { font-size: 17.5px; }
