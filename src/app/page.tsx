@@ -82,7 +82,9 @@ export default async function Home() {
           <footer className={styles.footer}>
             <div className={styles.footerInner}>
               <div className={styles.footerBrand}>
-                <span className="sparrow-logo" style={{ width: 40, height: 40 }} />
+                <span className="logo-badge" style={{ width: 44, height: 44 }}>
+                  <span className="sparrow-logo" />
+                </span>
                 <div>
                   <div className={styles.footerName}>Sparrow Institute</div>
                   <div className={styles.footerTag}>While I breathe, I hope.</div>

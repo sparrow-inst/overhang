@@ -100,12 +100,31 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--border);
 }
 
-/* logo rendered via alpha mask so it tints with the theme */
+/* logo rendered via alpha mask so it can take any ink color */
 .sparrow-logo {
   display: inline-block;
+  width: 100%;
+  height: 100%;
   background: currentColor;
   -webkit-mask: url("/sparrow-mask.png") no-repeat center / contain;
   mask: url("/sparrow-mask.png") no-repeat center / contain;
+}
+
+/* day: bare inked sparrow; night: dark sparrow in a white circle
+   rather than an inverted logo */
+.logo-badge {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  transition: background 0.4s ease;
+}
+:root[data-theme="night"] .logo-badge {
+  background: #f6f4ec;
+}
+:root[data-theme="night"] .logo-badge .sparrow-logo {
+  width: 70%;
+  height: 70%;
+  background: #171226;
 }
 
 @media (prefers-reduced-motion: reduce) {

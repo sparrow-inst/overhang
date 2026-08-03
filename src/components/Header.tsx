@@ -43,7 +43,9 @@ export function Header() {
       </button>
 
       <a className={styles.brand} href="#top">
-        <span className="sparrow-logo" style={{ width: 34, height: 34 }} />
+        <span className="logo-badge" style={{ width: 38, height: 38 }}>
+          <span className="sparrow-logo" />
+        </span>
         <span className={styles.brandName}>Sparrow<br />Institute</span>
       </a>
 
