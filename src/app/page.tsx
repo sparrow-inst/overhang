@@ -72,8 +72,8 @@ export default async function Home() {
                   </div>
                 </div>
                 <aside className={styles.aboutAside}>
-                  “Come join us at The Overhang — the view’s nice from here.”
-                  <footer>Sparrow Institute</footer>
+                  Come join us at The Overhang — the view’s nice from here.
+                  <footer>(Just don't look down)</footer>
                 </aside>
               </div>
             </section>
