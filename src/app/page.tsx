@@ -25,7 +25,11 @@ export default async function Home() {
               Overhang
             </h1>
             <p className={styles.subtitle}>
-              A two-day convening for forecasters, rationalists, futurists, and optimists.
+              {/* fixed break: the line splits after "forecasters," at every
+                  size rather than reflowing as the column widens */}
+              A two-day convening for forecasters,
+              <br />
+              rationalists, futurists, and optimists.
             </p>
           </div>
 

@@ -32,7 +32,8 @@
   font-size: clamp(16px, 1.6vw, 21px);
   font-weight: 500;
   line-height: 1.5;
-  max-width: 430px;
+  /* the break is hard-coded in the markup, so no width cap is needed to
+     force it — and a cap here would only add a second, unwanted wrap */
   color: var(--ink);
 }
 

@@ -89,8 +89,6 @@
   line-height: 1.35;
   text-align: left;
 }
-.rowLine { display: block; }
-
 /* the when-row carries the weight; the where-row sits back from it */
 .row:first-child .rowValue {
   font-size: 16.5px;
@@ -102,13 +100,11 @@
   color: var(--dim);
 }
 
-/* mobile card is wide but short, so each row prefers a single line — but the
-   parts stay separate words, free to wrap when they don't fit */
-@media (max-width: 767px) {
-  /* inline-block keeps each stamp whole, so a break lands in the space
-     between the halves rather than inside one of them */
-  .rowLine { display: inline-block; }
-}
+/* each row runs on one line at every size: inline-block keeps each stamp
+   whole, so if a break is ever needed it lands in the space between the
+   halves rather than inside one of them. The card is width:max-content, so it
+   grows to fit and the block-level CTA spans it. */
+.rowLine { display: inline-block; }
 
 /* desktop has the room for a larger card; mobile keeps the sizes above.
    Type scales on vw the way the hero title does (clamp(56px, 8.5vw, 118px)),
@@ -121,13 +117,6 @@
   .row svg { width: 20px; height: 20px; }
   .row:first-child .rowValue { font-size: clamp(17px, 1.44vw, 26px); }
   .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 23px); }
-}
-
-/* wide screens have room to run each row on one line again, the way mobile
-   does — the card is width:max-content, so it simply grows to fit and the CTA
-   spans the wider card with it */
-@media (min-width: 1600px) {
-  .rowLine { display: inline-block; }
 }
 
 /* primary action at the foot of the card, matching the header button */
