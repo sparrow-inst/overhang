@@ -21,7 +21,9 @@
   .card { width: min(460px, calc(100vw - 28px)); }
 }
 .card {
-  padding: 22px 26px 18px;
+  /* base for the card's em-sized internals; desktop overrides it to scale */
+  font-size: 16px;
+  padding: 1.4em 1.6em 1.15em;
   background: var(--panel);
   border: 1.5px solid var(--border);
   border-radius: 16px;
@@ -31,21 +33,21 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 1.7em;
   font-weight: 550;
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 0.22em;
 }
 
 .tagline {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 14.5px;
+  font-size: 0.9em;
   text-align: center;
   color: var(--dim);
-  margin-bottom: 14px;
+  margin-bottom: 0.97em;
 }
 
 .rule {
@@ -64,11 +66,13 @@
 }
 .rule svg { flex: none; opacity: 0.8; }
 
-/* no field labels — the icon plus the styling of each line says which is which */
+/* no field labels — the icon plus the styling of each line says which is which.
+   Everything below is sized in em off .card's font-size, so the card scales as
+   one object rather than each part having its own independent curve. */
 .rows {
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 0.68em;
 }
 /* icon sits in a gutter at the card's left edge, so the icons line up as a
    column rather than floating inline with the words; text runs left-aligned
@@ -77,9 +81,11 @@
   display: grid;
   grid-template-columns: var(--gutter) 1fr;
   align-items: start;
-  --gutter: 22px;
+  --gutter: 1.35em;
 }
 .row svg {
+  width: 1.05em;
+  height: 1.05em;
   margin-top: 0.15em; /* optically centre on the first line of text */
   color: var(--accent);
   opacity: 0.9;
@@ -91,51 +97,47 @@
 }
 /* the when-row carries the weight; the where-row sits back from it */
 .row:first-child .rowValue {
-  font-size: 16.5px;
+  font-size: 1.03em;
   font-weight: 550;
   letter-spacing: 0.005em;
 }
 .row:last-child .rowValue {
-  font-size: 15px;
+  font-size: 0.94em;
   color: var(--dim);
 }
 
-/* each row runs on one line at every size: inline-block keeps each stamp
-   whole, so if a break is ever needed it lands in the space between the
-   halves rather than inside one of them. The card is width:max-content, so it
-   grows to fit and the block-level CTA spans it. */
+/* inline-block keeps each stamp whole, so a break lands in the space between
+   the halves rather than inside one of them. The card is width:max-content,
+   so it grows to fit and the block-level CTA spans it. */
 .rowLine { display: inline-block; }
 
-/* desktop has the room for a larger card; mobile keeps the sizes above.
-   Type scales on vw the way the hero title does (clamp(56px, 8.5vw, 118px)),
-   so the card grows and shrinks in step with it — the vw slopes here are that
-   8.5vw scaled by each size's share of the title's 118px maximum.
+/* below 1200px the one-line rows crowd the title, so each row stacks its two
+   halves again; above it they run on a single line */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .rowLine { display: block; }
+}
 
-   The ceilings matter as much as the slopes: 8.5vw reaches 118px at ~1388px,
-   so each max below is its own slope at that same width. Otherwise the title
-   freezes while the card keeps growing, and the card reads as zooming alone
-   past ~1400px. */
+/* One knob for the whole card: everything inside is em-based, so this single
+   font-size scales the type, the icons, the gutter and the gaps together.
+   Linear from 16px at 768px to 20px at 1200px, then held — the same span over
+   which the rows collapse to two lines below 1200. */
 @media (min-width: 768px) {
-  .card { padding: 24px 30px 22px; }
-  .rows { gap: 15px; }
-  .row { --gutter: 26px; }
-  .row svg { width: 20px; height: 20px; }
-  .row:first-child .rowValue { font-size: clamp(17px, 1.44vw, 20px); }
-  .row:last-child .rowValue { font-size: clamp(15px, 1.26vw, 17.5px); }
+  .card {
+    font-size: clamp(16px, calc(8.89px + 0.926vw), 20px);
+    padding: 1.5em 1.85em 1.35em;
+  }
 }
 
 /* primary action at the foot of the card, matching the header button */
 .cta {
   display: block;
-  margin-top: 16px;
-  padding: 12px 22px;
+  margin-top: 1em;
+  padding: 0.75em 1.35em;
   border-radius: 10px;
   background: var(--cta);
   color: var(--cta-ink);
   text-align: center;
-  /* 1.1vw would only span 15->15.3px before the title's ceiling at ~1388px,
-     so this stays fixed rather than pretending to scale */
-  font-size: 15px;
+  font-size: 0.94em;
   font-weight: 650;
   letter-spacing: 0.02em;
 }
