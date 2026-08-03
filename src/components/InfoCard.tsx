@@ -41,8 +41,10 @@ export function InfoCard({
     {
       key: "where",
       icon: icon.pin,
+      // trailing comma so the two parts read correctly whether they stack
+      // (desktop) or join onto one line (mobile)
       lines: event
-        ? [event.locationLine1, event.locationLine2]
+        ? [`${event.locationLine1},`, event.locationLine2]
         : ["Near Dupont Circle,", "Washington, DC"],
     },
   ];

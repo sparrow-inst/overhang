@@ -7,9 +7,10 @@
   filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.18));
 }
 
+/* desktop card hugs its content; mobile keeps a fixed, wider box */
 .card {
-  width: min(440px, calc(100vw - 32px));
-  /* mobile spec asks for a wider card */
+  width: fit-content;
+  max-width: calc(100vw - 32px);
 }
 @media (max-width: 767px) {
   .card { width: min(460px, calc(100vw - 28px)); }
@@ -64,18 +65,21 @@
   flex-direction: column;
   gap: 11px;
 }
+/* icon + text centred as a unit, so the block hugs the text instead of
+   stretching the width of the card */
 .row {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  justify-content: center;
   column-gap: 12px;
-  align-items: start;
+  align-items: flex-start;
 }
 .row svg {
+  flex: none;
   margin-top: 0.15em; /* optically centre on the first line of text */
   color: var(--accent);
   opacity: 0.9;
 }
-.rowValue { color: var(--ink); line-height: 1.35; }
+.rowValue { color: var(--ink); line-height: 1.35; text-align: center; }
 .rowLine { display: block; }
 
 /* the when-row carries the weight; the where-row sits back from it */
@@ -87,6 +91,15 @@
 .row:last-child .rowValue {
   font-size: 15px;
   color: var(--dim);
+}
+
+/* mobile card is wide but short — each row reads better as a single line */
+@media (max-width: 767px) {
+  .rowLine { display: inline; }
+  .rowLine + .rowLine::before {
+    content: " ";
+    white-space: pre;
+  }
 }
 
 /* desktop has the room for a larger card; mobile keeps the sizes above */
