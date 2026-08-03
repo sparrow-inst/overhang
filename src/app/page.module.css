@@ -11,25 +11,17 @@
   padding: 20px 7vw 0;
 }
 
-/* legend plate and location card as one group, so the card is placed relative
-   to the plate rather than pinned to the viewport corner */
+/* title block and location card as one group, so the card is placed relative
+   to the title rather than pinned to the viewport corner */
 .heroGroup {
-  display: flex;
-  align-items: flex-end;
-  gap: clamp(24px, 4vw, 64px);
+  position: relative;
+  width: fit-content;
 }
 
-/* the title block is a map legend: a dark plate the type sits on, so it stays
-   legible over the topo lines instead of competing with them */
+/* plate is off for now — the type sits directly on the map again */
 .titleBlock {
   max-width: fit-content;
-  padding: 30px 38px 34px;
-  border-radius: 18px;
-  background: rgba(28, 22, 14, 0.6);
-  border: 2px solid rgba(245, 236, 218, 0.8);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  box-shadow: var(--shadow);
+  padding: 10px 0 0;
 }
 
 .title {
@@ -40,7 +32,7 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   margin: 0 0 20px;
-  color: #fff;
+  color: var(--ink);
 }
 
 .subtitle {
@@ -48,15 +40,23 @@
   font-weight: 500;
   line-height: 1.5;
   max-width: 430px;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
 }
 
 /* marker + tail point up in both layouts */
 .heroCard {
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
-/* desktop card rides alongside the legend plate, in flow with it */
-.cardDesktop { flex: none; }
+/* card hangs off the title block's bottom-right, overlapping it slightly.
+   width:max-content stops the card shrink-wrapping to the narrow group it's
+   absolutely positioned inside — it sizes to its own text instead. */
+.cardDesktop {
+  position: absolute;
+  left: calc(100% - var(--overlap));
+  top: calc(100% - var(--overlap));
+  width: max-content;
+  --overlap: 56px;
+}
 
 .cardMobile { display: none; }
 
