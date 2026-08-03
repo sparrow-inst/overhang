@@ -31,8 +31,16 @@
   opacity: 0.85;
 }
 
+/* boxed so it reads against the topo lines instead of dissolving into them */
 .schedule {
-  margin-top: 22px;
+  display: inline-block;
+  margin-top: 26px;
+  padding: 9px 16px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.22em;
@@ -47,7 +55,7 @@
 }
 .cardDesktop {
   right: 11vw;
-  bottom: 4dvh;
+  bottom: 24dvh;
 }
 
 .cardMobile { display: none; }

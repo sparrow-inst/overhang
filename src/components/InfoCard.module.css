@@ -8,7 +8,7 @@
 }
 
 .card {
-  width: min(400px, calc(100vw - 32px));
+  width: min(440px, calc(100vw - 32px));
   /* mobile spec asks for a wider card */
 }
 @media (max-width: 767px) {
@@ -75,9 +75,10 @@
   color: var(--accent);
   opacity: 0.9;
 }
-.rowValue { color: var(--ink); line-height: 1.4; }
+.rowValue { color: var(--ink); line-height: 1.35; }
+.rowLine { display: block; }
 
-/* the when-line carries the weight; the where-line sits back from it */
+/* the when-row carries the weight; the where-row sits back from it */
 .row:first-child .rowValue {
   font-size: 16.5px;
   font-weight: 550;
@@ -86,6 +87,16 @@
 .row:last-child .rowValue {
   font-size: 15px;
   color: var(--dim);
+}
+
+/* desktop has the room for a larger card; mobile keeps the sizes above */
+@media (min-width: 768px) {
+  .card { padding: 24px 30px 22px; }
+  .rows { gap: 15px; }
+  .row { column-gap: 14px; }
+  .row svg { width: 20px; height: 20px; }
+  .row:first-child .rowValue { font-size: 20px; }
+  .row:last-child .rowValue { font-size: 17.5px; }
 }
 
 .schedule {

@@ -1,9 +1,10 @@
 import type { LumaEventInfo } from "@/lib/luma";
 
-/** "10:00 AM Sep 19 – 6:00 PM Sep 20, 2026 ET" — one line, no ambiguity about
-    which time belongs to which day */
-export function formatDateTimeRange(ev: LumaEventInfo): string {
-  if (!ev.startAt) return "Dates to come";
+/** The start and end stamps as separate lines, so each time stays visibly
+    attached to its own day:
+      ["10:00 AM Sep 19 –", "6:00 PM Sep 20, 2026 ET"] */
+export function formatDateTimeLines(ev: LumaEventInfo): string[] {
+  if (!ev.startAt) return ["Dates to come"];
   const start = new Date(ev.startAt);
   const stamp = (d: Date) =>
     `${new Intl.DateTimeFormat("en-US", {
@@ -11,9 +12,12 @@ export function formatDateTimeRange(ev: LumaEventInfo): string {
     }).format(d)} ${new Intl.DateTimeFormat("en-US", {
       month: "short", day: "numeric", timeZone: ev.timezone,
     }).format(d)}`;
-  if (!ev.endAt) return `${stamp(start)}, ${formatYear(ev, start)}`;
+  if (!ev.endAt) return [`${stamp(start)}, ${formatYear(ev, start)}`];
   const end = new Date(ev.endAt);
-  return `${stamp(start)} – ${stamp(end)}, ${formatYear(ev, end)} ${timezoneAbbr(ev)}`.trim();
+  return [
+    `${stamp(start)} –`,
+    `${stamp(end)}, ${formatYear(ev, end)} ${timezoneAbbr(ev)}`.trim(),
+  ];
 }
 
 function formatYear(ev: LumaEventInfo, d: Date): string {

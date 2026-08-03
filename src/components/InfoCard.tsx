@@ -1,5 +1,5 @@
 import type { LumaEventInfo } from "@/lib/luma";
-import { formatDateTimeRange } from "@/lib/format";
+import { formatDateTimeLines } from "@/lib/format";
 import styles from "./InfoCard.module.css";
 
 const icon = {
@@ -34,12 +34,16 @@ export function InfoCard({
     {
       key: "when",
       icon: icon.calendar,
-      value: event ? formatDateTimeRange(event) : "10:00 AM Sep 19 – 6:00 PM Sep 20, 2026 ET",
+      lines: event
+        ? formatDateTimeLines(event)
+        : ["10:00 AM Sep 19 –", "6:00 PM Sep 20, 2026 ET"],
     },
     {
       key: "where",
       icon: icon.pin,
-      value: event ? `${event.locationLine1}, ${event.locationLine2}` : "Near Dupont Circle, Washington, DC",
+      lines: event
+        ? [event.locationLine1, event.locationLine2]
+        : ["Near Dupont Circle,", "Washington, DC"],
     },
   ];
 
@@ -69,7 +73,13 @@ export function InfoCard({
           {rows.map((r) => (
             <div key={r.key} className={styles.row}>
               {r.icon}
-              <span className={styles.rowValue}>{r.value}</span>
+              <span className={styles.rowValue}>
+                {r.lines.map((line, i) => (
+                  <span key={i} className={styles.rowLine}>
+                    {line}
+                  </span>
+                ))}
+              </span>
             </div>
           ))}
         </div>
