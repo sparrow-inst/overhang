@@ -43,15 +43,12 @@ function tierStatus(t: Tier, now: number): TierStatus {
   return "open";
 }
 
-function statusLine(t: Tier, status: TierStatus): string | null {
+/* Only open tiers are rendered, so the sales deadline is the one status
+   left worth showing. */
+function statusLine(t: Tier): string | null {
+  if (!t.validEndAt) return null;
   const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", timeZone: "America/New_York" };
-  if (status === "soldout") return "Sold out";
-  if (status === "upcoming" && t.validStartAt)
-    return `Opens ${new Intl.DateTimeFormat("en-US", opts).format(new Date(t.validStartAt))}`;
-  if (status === "ended") return "Sales ended";
-  if (status === "open" && t.validEndAt)
-    return `Until ${new Intl.DateTimeFormat("en-US", opts).format(new Date(t.validEndAt))}`;
-  return null;
+  return `Until ${new Intl.DateTimeFormat("en-US", opts).format(new Date(t.validEndAt))}`;
 }
 
 export function TicketCard() {
@@ -80,12 +77,21 @@ export function TicketCard() {
     [tiers, now],
   );
 
+  /* Only tiers you can actually buy right now. Before mount `now` is 0 and
+     every tier reads as open, so the server pass renders them all and the
+     filter takes effect on the client — same markup either way, no hydration
+     mismatch. */
+  const visible = useMemo(
+    () => tiers.filter((t) => statuses.get(t.id) === "open"),
+    [tiers, statuses],
+  );
+
   // default selection: first tier that is actually purchasable
   useEffect(() => {
     if (selected && statuses.get(selected) === "open") return;
-    const first = tiers.find((t) => statuses.get(t.id) === "open");
+    const first = visible[0];
     if (first) setSelected(first.id);
-  }, [tiers, statuses, selected]);
+  }, [visible, statuses, selected]);
 
   /* The embed script binds its click handler when it scans the DOM, which
      happens before this client component has rendered — and it reads the
@@ -115,15 +121,14 @@ export function TicketCard() {
         <p className={styles.blurb}>Includes all meals, beverages, and the afterparty.</p>
 
         <div className={styles.tiers}>
-          {tiers.map((t) => {
-            const status = statuses.get(t.id) ?? "open";
-            const line = now ? statusLine(t, status) : null;
-            const selectable = status === "open";
+          {visible.map((t) => {
+            /* every tier here is open, so the only status worth showing is
+               the sales deadline */
+            const line = now ? statusLine(t) : null;
             return (
               <button
                 key={t.id}
                 className={`${styles.tier} ${selected === t.id ? styles.tierSelected : ""}`}
-                disabled={!selectable}
                 onClick={() => setSelected(t.id)}
               >
                 <span className={styles.tierName}>
@@ -132,7 +137,6 @@ export function TicketCard() {
                 </span>
                 <span className={styles.price}>{formatPrice(t.priceCents, t.free)}</span>
                 {t.description && <span className={styles.tierNote}>{t.description}</span>}
-                {t.requireApproval && <span className={styles.tierNote}>Requires approval</span>}
                 {line && <span className={styles.status}>{line}</span>}
               </button>
             );
