@@ -6,9 +6,8 @@ and pushed to GitHub** with grouped commits. One step needs you: **Vercel**
 
 ## What's done
 
-- **Repo:** https://github.com/sparrow-inst/overhang (note: the GitHub org is
-  `Takeoff-DC`, not `TakeoffDC` — that org doesn't exist, so I used the one
-  you're a member of).
+- **Repo:** https://github.com/sparrow-inst/overhang (originally pushed to
+  `Takeoff-DC`, which you renamed to `sparrow-inst` — local remote updated).
 - **Everything in the brief:** animated topo background with your locked
   params (day paper-map / night neon, same world relit), sticky header
   (mobile: menu left, wordmark center, toggle right), map-legend info card
