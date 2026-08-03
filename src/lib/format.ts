@@ -1,31 +1,32 @@
 import type { LumaEventInfo } from "@/lib/luma";
 
-/** "Sat, Sep 19 – Sun, Sep 20, 2026" */
-export function formatDateRange(ev: LumaEventInfo): string {
+/** "10:00 AM Sep 19 – 6:00 PM Sep 20, 2026 ET" — one line, no ambiguity about
+    which time belongs to which day */
+export function formatDateTimeRange(ev: LumaEventInfo): string {
   if (!ev.startAt) return "Dates to come";
-  const day = new Intl.DateTimeFormat("en-US", {
-    weekday: "short", month: "short", day: "numeric", timeZone: ev.timezone,
-  });
   const start = new Date(ev.startAt);
-  if (!ev.endAt) return `${day.format(start)}, ${start.getUTCFullYear()}`;
+  const stamp = (d: Date) =>
+    `${new Intl.DateTimeFormat("en-US", {
+      hour: "numeric", minute: "2-digit", timeZone: ev.timezone,
+    }).format(d)} ${new Intl.DateTimeFormat("en-US", {
+      month: "short", day: "numeric", timeZone: ev.timezone,
+    }).format(d)}`;
+  if (!ev.endAt) return `${stamp(start)}, ${formatYear(ev, start)}`;
   const end = new Date(ev.endAt);
-  const year = new Intl.DateTimeFormat("en-US", { year: "numeric", timeZone: ev.timezone }).format(end);
-  return `${day.format(start)} – ${day.format(end)}, ${year}`;
+  return `${stamp(start)} – ${stamp(end)}, ${formatYear(ev, end)} ${timezoneAbbr(ev)}`.trim();
 }
 
-/** "10:00 AM – 6:00 PM ET" */
-export function formatTimeRange(ev: LumaEventInfo): string {
-  if (!ev.startAt || !ev.endAt) return "Times to come";
-  const time = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric", minute: "2-digit", timeZone: ev.timezone,
-  });
-  const tzAbbr =
+function formatYear(ev: LumaEventInfo, d: Date): string {
+  return new Intl.DateTimeFormat("en-US", { year: "numeric", timeZone: ev.timezone }).format(d);
+}
+
+function timezoneAbbr(ev: LumaEventInfo): string {
+  const abbr =
     new Intl.DateTimeFormat("en-US", { timeZoneName: "short", timeZone: ev.timezone })
-      .formatToParts(new Date(ev.startAt))
+      .formatToParts(new Date(ev.startAt!))
       .find((p) => p.type === "timeZoneName")?.value ?? "";
   // "EDT"/"EST" reads awkwardly on a poster; collapse to "ET" style
-  const tz = tzAbbr.replace(/^([A-Z])[DS]T$/, "$1T");
-  return `${time.format(new Date(ev.startAt))} – ${time.format(new Date(ev.endAt))} ${tz}`.trim();
+  return abbr.replace(/^([A-Z])[DS]T$/, "$1T");
 }
 
 export function formatPrice(cents: number | null, free: boolean): string {

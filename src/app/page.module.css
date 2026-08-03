@@ -46,7 +46,7 @@
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
 .cardDesktop {
-  right: 5vw;
+  right: 11vw;
   bottom: 4dvh;
 }
 
