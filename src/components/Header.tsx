@@ -19,11 +19,15 @@ export function Header() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 24);
-      // wordmark waits until the whole splash screen is behind us
+      // wordmark comes in once ~70% of the splash is behind us, rather than
+      // waiting for the whole thing to clear
       const splash = document.getElementById("splash");
-      setPastSplash(
-        splash ? splash.getBoundingClientRect().bottom <= 64 : window.scrollY > window.innerHeight,
-      );
+      if (splash) {
+        const { top, height } = splash.getBoundingClientRect();
+        setPastSplash(-top >= height * 0.7);
+      } else {
+        setPastSplash(window.scrollY > window.innerHeight * 0.7);
+      }
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });

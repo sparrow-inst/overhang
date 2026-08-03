@@ -35,7 +35,7 @@
 .schedule {
   display: inline-block;
   margin-top: 26px;
-  padding: 9px 16px;
+  padding: 8px 13px;
   background: var(--panel);
   border: 1.5px solid var(--border);
   border-radius: 10px;
@@ -43,7 +43,7 @@
   -webkit-backdrop-filter: blur(10px);
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--dim);
 }

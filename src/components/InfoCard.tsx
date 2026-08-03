@@ -36,7 +36,7 @@ export function InfoCard({
       icon: icon.calendar,
       lines: event
         ? formatDateTimeLines(event)
-        : ["10:00 AM Sep 19 –", "6:00 PM Sep 20, 2026 ET"],
+        : ["10:00 AM Sep 19 –", "6:00 PM Sep 20"],
     },
     {
       key: "where",

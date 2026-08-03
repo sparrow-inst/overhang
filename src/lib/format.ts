@@ -2,7 +2,8 @@ import type { LumaEventInfo } from "@/lib/luma";
 
 /** The start and end stamps as separate lines, so each time stays visibly
     attached to its own day:
-      ["10:00 AM Sep 19 –", "6:00 PM Sep 20, 2026 ET"] */
+      ["10:00 AM Sep 19 –", "6:00 PM Sep 20"]
+    Year and timezone are left off — the poster context carries both. */
 export function formatDateTimeLines(ev: LumaEventInfo): string[] {
   if (!ev.startAt) return ["Dates to come"];
   const start = new Date(ev.startAt);
@@ -12,25 +13,8 @@ export function formatDateTimeLines(ev: LumaEventInfo): string[] {
     }).format(d)} ${new Intl.DateTimeFormat("en-US", {
       month: "short", day: "numeric", timeZone: ev.timezone,
     }).format(d)}`;
-  if (!ev.endAt) return [`${stamp(start)}, ${formatYear(ev, start)}`];
-  const end = new Date(ev.endAt);
-  return [
-    `${stamp(start)} –`,
-    `${stamp(end)}, ${formatYear(ev, end)} ${timezoneAbbr(ev)}`.trim(),
-  ];
-}
-
-function formatYear(ev: LumaEventInfo, d: Date): string {
-  return new Intl.DateTimeFormat("en-US", { year: "numeric", timeZone: ev.timezone }).format(d);
-}
-
-function timezoneAbbr(ev: LumaEventInfo): string {
-  const abbr =
-    new Intl.DateTimeFormat("en-US", { timeZoneName: "short", timeZone: ev.timezone })
-      .formatToParts(new Date(ev.startAt!))
-      .find((p) => p.type === "timeZoneName")?.value ?? "";
-  // "EDT"/"EST" reads awkwardly on a poster; collapse to "ET" style
-  return abbr.replace(/^([A-Z])[DS]T$/, "$1T");
+  if (!ev.endAt) return [stamp(start)];
+  return [`${stamp(start)} –`, stamp(new Date(ev.endAt))];
 }
 
 export function formatPrice(cents: number | null, free: boolean): string {

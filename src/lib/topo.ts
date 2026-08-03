@@ -183,18 +183,24 @@ void main(){
   float depth = clamp((wl - v01) / 0.08, 0.0, 1.0);
   float sw = (1.0 - smoothstep(0.0, 1.6 * fw01, abs(v01 - wl))) * flatSurf;
 
+  // hillshade lambert term, shared by day relief and night contour lighting
+  // (0.647 = the flat-ground value, so unlit pixels stay neutral)
+  float lam = 0.647;
+  if (u_relief > 0.001) {
+    float e2 = 2.0 * s;
+    float vx = field(p + vec2(e2, 0.0), u_time);
+    float vy = field(p + vec2(0.0, e2), u_time);
+    vec2 grad = vec2(vx - v, vy - v);
+    vec3 nrm = normalize(vec3(-grad * u_relief * 90.0, 1.0));
+    vec3 L = normalize(vec3(-0.55, -0.55, 0.66));
+    lam = clamp(dot(nrm, L), 0.0, 1.0);
+  }
+
   vec3 col;
   if (u_night == 0) {
     // ---------- DAY: ink on paper ----------
     vec3 shade = vec3(1.0);
     if (u_relief > 0.001) {
-      float e2 = 2.0 * s;
-      float vx = field(p + vec2(e2, 0.0), u_time);
-      float vy = field(p + vec2(0.0, e2), u_time);
-      vec2 grad = vec2(vx - v, vy - v);
-      vec3 nrm = normalize(vec3(-grad * u_relief * 90.0, 1.0));
-      vec3 L = normalize(vec3(-0.55, -0.55, 0.66));
-      float lam = clamp(dot(nrm, L), 0.0, 1.0);
       if (u_cel == 1) {
         float xq = lam * 4.0;
         float aa = clamp(fwidth(xq) * 1.5, 0.02, 0.35);
@@ -224,7 +230,12 @@ void main(){
     vec3 posCol = (w1*vec3(124.,100.,255.) + w2*vec3(255.,126.,48.)) / max(w1+w2, 1e-6) / 255.;
     vec3 lineCol = (u_elev == 1) ? elevCol : posCol;
     vec3 bg = mix(vec3(0.039, 0.035, 0.063), vec3(0.047, 0.039, 0.075), pix.y / u_cssRes.y);
-    vec3 land = bg + lineCol * a * (core * 0.45 + halo * 0.10 * u_glow);
+    // contour lighting: hillshade modulates the neon — lit slopes burn
+    // brighter, shadow-side lines fall back (flat ground stays ~1.0)
+    float lit = mix(0.40, 1.35, lam);
+    vec3 land = bg + lineCol * a * lit * (core * 0.45 + halo * 0.10 * u_glow);
+    // faint colored wash on lit faces so the relief reads between the lines
+    land += lineCol * a * pow(lam, 2.0) * 0.05;
     // lakes: matte dark-blue water with a single clean shoreline stroke
     float aw = clamp(a * 1.8, 0.0, 1.0);
     vec3 wat = vec3(0.050, 0.085, 0.145);
