@@ -40,30 +40,34 @@
 .heroCard {
   z-index: 2; /* paint above the solid section so the marker never clips */
 }
-/* the card's top-centre sits 66% of the way along the screen diagonal. A point
-   at fraction f down the top-left -> bottom-right diagonal is (f, f) in each
+/* the card's centre sits 66% of the way along the screen diagonal. A point at
+   fraction f down the top-left -> bottom-right diagonal is (f, f) in each
    axis, so 66% across and 66% down the *viewport*. These are offsets inside
    .hero, which starts below the 64px header and is inset by its own padding,
-   so each axis subtracts that origin to get back to screen coordinates.
+   so each axis subtracts that origin to get back to screen coordinates; the
+   -50% translations then centre the card on the point.
 
-   Two constraints ride on top of that:
-   - the card keeps a 5dvh gap under it. translateY pulls it up by whatever
-     its own height overruns that floor, so the browser measures the card for
-     us — no hardcoded height, and it still tracks content changes.
-   - on very wide screens the diagonal lands too far inboard, so --drift
-     pushes right in proportion to how much wider than 16:9 the screen is. */
+   Three constraints ride on top of that:
+   - the card keeps a 5dvh gap under it. Percentage translations resolve
+     against the element's own size, so the browser measures the card for us —
+     no hardcoded height, and it tracks content changes. Centred, the card's
+     foot sits 50% below the point, hence the -50% inside the min().
+   - --bias nudges it right of the strict diagonal at every size, without
+     touching where it sits vertically.
+   - on very wide screens it wants to be further right still, so --drift adds
+     more in proportion to how much wider than 16:9 the screen is. */
 .cardDesktop {
   position: absolute;
   --diagonal: 0.66;
   --hero-top: 64px; /* sticky header height */
   --floor: 5dvh;
+  --bias: 7vw;
   /* 0 at 16:9, growing as the viewport gets wider relative to its height */
   --drift: max(0px, (100vw - 100dvh * 16 / 9) * 0.32);
-  left: calc(100vw * var(--diagonal) - 7vw + var(--drift));
+  left: calc(100vw * var(--diagonal) - 7vw + var(--bias) + var(--drift));
   top: calc(100dvh * var(--diagonal) - var(--hero-top) - 20px);
-  /* clamp: 0 when the card fits, negative once its foot passes the floor */
   transform: translateX(-50%)
-    translateY(min(0px, 100dvh * (1 - var(--diagonal)) - var(--floor) - 100%));
+    translateY(min(-50%, 100dvh * (1 - var(--diagonal)) - var(--floor) - 100%));
   width: max-content;
 }
 
