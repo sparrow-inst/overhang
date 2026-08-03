@@ -50,7 +50,6 @@ export function InfoCard({
       label: "Location",
       value: event ? `${event.locationLine1}, ${event.locationLine2}` : "Near Dupont Circle, Washington, DC",
     },
-    { icon: icon.people, label: "Capacity", value: "3× last year" },
   ];
 
   return (
@@ -80,7 +79,8 @@ export function InfoCard({
             <RowCells key={r.label} {...r} />
           ))}
         </div>
-        <div className={styles.schedule}>Schedule to come</div>
+        {/* desktop shows this line in the hero title block instead */}
+        {showTitle && <div className={styles.schedule}>Schedule to come</div>}
       </div>
     </div>
   );

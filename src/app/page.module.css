@@ -31,13 +31,23 @@
   opacity: 0.85;
 }
 
-/* card on the right side of the screen, marker + tail pointing up */
+.schedule {
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* card in the bottom-right of the screen, marker + tail pointing up */
 .heroCard {
   position: absolute;
-  left: 67%;
-  transform: translateX(-50%);
-  top: clamp(120px, 20dvh, 260px);
   z-index: 2; /* paint above the solid section so the marker never clips */
+}
+.cardDesktop {
+  right: 5vw;
+  bottom: 4dvh;
 }
 
 .cardMobile { display: none; }
@@ -52,7 +62,7 @@
   .cardMobile {
     display: block;
     left: 50%;
-    top: auto;
+    transform: translateX(-50%);
     bottom: 4dvh;
   }
 }
