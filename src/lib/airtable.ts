@@ -49,7 +49,7 @@ export async function getSpeakers(): Promise<Speaker[]> {
           name: f.Name ?? "",
           subtitle: f.Title ?? "",
           photoUrl: photoUrl(f.Photo),
-          featured: !!f.Featured,
+          featured: f.Featured,
         };
       })
       /* only Featured rows go on the site; that also skips the blank rows
