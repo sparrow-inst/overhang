@@ -38,7 +38,7 @@ export function SpeakerCarousel({ speakers }: { speakers: Speaker[] }) {
     return (
       <section id="speakers" style={{ scrollMarginTop: 80 }}>
         <div className={styles.head}>
-          <h2 className="section-title">Featured Speakers</h2>
+          <h2 className="section-title">Speakers</h2>
         </div>
         <p className={styles.empty}>Speakers announced soon.</p>
       </section>
@@ -48,7 +48,7 @@ export function SpeakerCarousel({ speakers }: { speakers: Speaker[] }) {
   return (
     <section id="speakers" style={{ scrollMarginTop: 80 }}>
       <div className={styles.head}>
-        <h2 className="section-title">Featured Speakers</h2>
+        <h2 className="section-title">Speakers</h2>
         <div className={styles.arrows}>
           <button
             className={styles.arrow}

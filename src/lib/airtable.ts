@@ -52,11 +52,9 @@ export async function getSpeakers(): Promise<Speaker[]> {
           featured: !!f.Featured,
         };
       })
-      /* skip the blank rows Airtable keeps around for new entries */
-      .filter((s: Speaker) => s.name && s.photoUrl)
-      /* the section is "Featured Speakers", so those lead; the rest keep
-         Airtable's own order behind them */
-      .sort((a: Speaker, b: Speaker) => Number(b.featured) - Number(a.featured));
+      /* only Featured rows go on the site; that also skips the blank rows
+         Airtable keeps around for new entries */
+      .filter((s: Speaker) => s.featured && s.name && s.photoUrl);
   } catch (err) {
     console.error("[airtable:speakers]", err);
     return [];
