@@ -22,6 +22,11 @@
 .arrow:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
 .arrow:disabled { opacity: 0.35; cursor: default; }
 
+.empty {
+  color: var(--dim);
+  font-size: 15px;
+}
+
 .track {
   display: flex;
   gap: 18px;

@@ -33,8 +33,17 @@ export function SpeakerCarousel({ speakers }: { speakers: Speaker[] }) {
     trackRef.current?.scrollTo({ left: i * cardStep(), behavior: "smooth" });
   };
 
-  // nothing to show rather than an empty carousel if Airtable is unreachable
-  if (!speakers.length) return null;
+  // no lineup yet (or Airtable is unreachable): keep the section, drop the carousel
+  if (!speakers.length) {
+    return (
+      <section id="speakers" style={{ scrollMarginTop: 80 }}>
+        <div className={styles.head}>
+          <h2 className="section-title">Featured Speakers</h2>
+        </div>
+        <p className={styles.empty}>Speakers announced soon.</p>
+      </section>
+    );
+  }
 
   return (
     <section id="speakers" style={{ scrollMarginTop: 80 }}>
